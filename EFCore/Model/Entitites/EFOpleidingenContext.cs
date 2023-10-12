@@ -13,6 +13,7 @@ namespace Model.Entitites
         public static IConfigurationRoot configuration;
         public DbSet<Campus> Campussen { get; set; }
         public DbSet<Docent> Docenten { get; set; }
+        public DbSet<Land> Landen { get; set; }
 
         // /* CONNECTIONSTRING HARDCODED : */
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
