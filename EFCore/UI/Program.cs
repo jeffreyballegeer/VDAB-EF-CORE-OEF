@@ -1,2 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using Model.Entitites;
+
+using var context = new EFOpleidingenContext();
+foreach (var docent in context.Docenten)
+    Console.WriteLine(docent.Naam);

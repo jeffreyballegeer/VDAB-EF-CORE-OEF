@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Model.Entitites
 {
-    internal class EFOpleidingenContext : DbContext
+    public class EFOpleidingenContext : DbContext
     {
         public static IConfigurationRoot configuration;
         public DbSet<Campus> Campussen { get; set; }
