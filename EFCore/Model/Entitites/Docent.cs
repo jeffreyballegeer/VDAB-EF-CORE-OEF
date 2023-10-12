@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Model.Entitites
 {
-    public class Docent
+    public partial class Docent
     {
         public int DocentId { get; set; }
         [Required]
@@ -29,6 +29,7 @@ namespace Model.Entitites
         public string LandCode { get; set; }
         public int CampusId { get; set; }
         public Campus Campus { get; set; }  //nav prop
+        public Geslacht Geslacht { get; set; }
         public Land Land { get; set; }
     }
 }
