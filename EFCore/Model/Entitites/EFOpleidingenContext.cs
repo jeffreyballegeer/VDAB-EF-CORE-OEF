@@ -33,12 +33,13 @@ namespace Model.Entitites
             var connectionString =
             configuration.GetConnectionString("EFOpleidingen");     // haal connectiestring uit configfile
             if (connectionString != null)
-                optionsBuilder.UseSqlServer(connectionString,
-                options => options.MaxBatchSize(150));
+                optionsBuilder.UseSqlServer(connectionString, options => options.MaxBatchSize(150));
+            //optionsBuilder.LogTo(Console.WriteLine);              // log sql query to console
         }
-
+            
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            #region Campussen
             modelBuilder.Entity<Campus>().HasData(
                 new Campus
                 {
@@ -104,7 +105,9 @@ namespace Model.Entitites
                 new Land { LandCode = "IT", Naam = "Italië" },
                 new Land { LandCode = "LU", Naam = "Luxemburg" }
             );
+            #endregion
 
+            #region Docent
             modelBuilder.Entity<Docent>().HasData(
                 new Docent
                 {
@@ -4114,6 +4117,7 @@ namespace Model.Entitites
                     CampusId = 1,
                     LandCode = "BE"
                 }
+                #endregion
         );
         }
     }
