@@ -21,6 +21,6 @@ namespace Model.Entitites
         public string Gemeente { get; set; }
         [NotMapped]
         public string Commentaar { get; set; }
-        public ICollection<Docent> Docenten { get; set; } // navigation property (in een campus werken meerdere docenten)
+        public virtual ICollection<Docent> Docenten { get; set; } // navigation property (in een campus werken meerdere docenten) // virtual for Lazy loading with proxies
     }
 }

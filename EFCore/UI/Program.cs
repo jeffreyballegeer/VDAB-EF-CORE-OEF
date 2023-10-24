@@ -8,7 +8,9 @@ using Model.Entitites;
 //GetDocentOnPrimaryKey_UsingFind();
 //GetPartialObjects_UsingLINQ();
 //GetPartialObjects_UsingQueryMethods();
-GetAllDocents_GroupByName();
+//GetAllDocents_GroupByName();
+GetAllDocentsWithNameX_TestForLazyLoadingUsingProxies();
+
 
 #region Methods
 
@@ -118,5 +120,19 @@ void GetAllDocents_GroupByName()
         Console.WriteLine(voornaamStatistiek.Aantal + " keer.");
     }
 }
+
+void GetAllDocentsWithNameX_TestForLazyLoadingUsingProxies()
+{
+    // to be used with proxies eager loading enabled (.UseLazyLoadingProxies() in program.cs & virtual nav props in entities
+    using var context = new EFOpleidingenContext();
+    Console.Write("Voornaam:");
+    var voornaam = Console.ReadLine();
+    var query = from docent in context.Docenten // (1) 
+                where docent.Voornaam == voornaam
+                select docent;
+    foreach (var docent in query)
+        Console.WriteLine("{0} : {1}", docent.Naam, docent.Campus.Naam);
+}
+
 
 #endregion

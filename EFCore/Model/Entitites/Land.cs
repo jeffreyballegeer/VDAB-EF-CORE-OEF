@@ -13,6 +13,6 @@ namespace Model.Entitites
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)] //geen autonummering
         public string LandCode { get; set; }
         public string Naam { get; set; }
-        public ICollection<Docent> Docenten { get; set; }
+        public virtual ICollection<Docent> Docenten { get; set; } // virtual for Lazy loading with proxies
     }
 }

@@ -28,8 +28,8 @@ namespace Model.Entitites
         [ForeignKey("Land")]
         public string LandCode { get; set; }
         public int CampusId { get; set; }
-        public Campus Campus { get; set; }  //nav prop
+        public virtual Campus Campus { get; set; }  //nav prop // virtual for Lazy loading with proxies
         public Geslacht Geslacht { get; set; }
-        public Land Land { get; set; }
+        public virtual Land Land { get; set; } // nav prop // virtual for Lazy loading with proxies
     }
 }
