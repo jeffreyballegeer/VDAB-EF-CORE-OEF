@@ -8,6 +8,7 @@ using Model.Entitites;
 //GetDocentOnPrimaryKey_UsingFind();
 //GetPartialObjects_UsingLINQ();
 //GetPartialObjects_UsingQueryMethods();
+GetAllDocents_GroupByName();
 
 #region Methods
 
@@ -99,5 +100,23 @@ void GetPartialObjects_UsingQueryMethods()
         Console.WriteLine("{0}: {1}", campusDeel.CampusId, campusDeel.Naam);
 }
 
+void GetAllDocents_GroupByName()
+{
+    //use group, by & into to group results of a query
+    using var context = new EFOpleidingenContext();
+    var query = from docent in context.Docenten
+                group docent by docent.Voornaam
+                into voornaamGroep
+                select new
+                {
+                    Voornaam = voornaamGroep.Key, //key on which was grouped
+                    Aantal = voornaamGroep.Count()
+                };
+    foreach (var voornaamStatistiek in query)
+    {
+        Console.Write(voornaamStatistiek.Voornaam + ": ");
+        Console.WriteLine(voornaamStatistiek.Aantal + " keer.");
+    }
+}
 
 #endregion
