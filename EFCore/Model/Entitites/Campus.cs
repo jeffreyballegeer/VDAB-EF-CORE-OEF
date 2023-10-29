@@ -5,11 +5,22 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Model.Entitites
 {
     public class Campus
     {
+        private readonly ILazyLoader lazyLoader;
+        public Campus(ILazyLoader lazyLoader)       // lazyload by dependency injection
+        {
+            this.lazyLoader = lazyLoader;
+        }
+        public Campus()
+        {
+            Docenten = new List<Docent>();
+        }
+
         public int CampusId { get; set; }
         [Required]
         [Column("CampusNaam")]
@@ -21,6 +32,13 @@ namespace Model.Entitites
         public string Gemeente { get; set; }
         [NotMapped]
         public string Commentaar { get; set; }
-        public virtual ICollection<Docent> Docenten { get; set; } // navigation property (in een campus werken meerdere docenten) // virtual for Lazy loading with proxies
+
+        // navigation property (in een campus werken meerdere docenten) 
+        private ICollection<Docent> docenten;
+        public ICollection<Docent> Docenten {
+            get => lazyLoader.Load(this, ref docenten);
+            set => docenten = value;
+
+                }
     }
 }

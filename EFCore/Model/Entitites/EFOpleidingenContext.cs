@@ -34,8 +34,7 @@ namespace Model.Entitites
             configuration.GetConnectionString("EFOpleidingen");     // haal connectiestring uit configfile
             if (connectionString != null)
                 optionsBuilder
-                    .UseSqlServer(connectionString, options => options.MaxBatchSize(150))
-                    .UseLazyLoadingProxies();
+                    .UseSqlServer(connectionString, options => options.MaxBatchSize(150));
             //optionsBuilder.LogTo(Console.WriteLine);              // log sql query to console
         }
             

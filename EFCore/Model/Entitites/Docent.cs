@@ -7,11 +7,20 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Model.Entitites
 {
     public partial class Docent
     {
+        private readonly ILazyLoader lazyLoader;
+
+        public Docent() { }                                 // empty ctor used in EFOpleidingenContext seeding
+        public Docent(ILazyLoader lazyLoader)               // lazyloader by dependency injection
+        {
+            this.lazyLoader = lazyLoader;
+        }
+
         public int DocentId { get; set; }
         [Required]
         [StringLength(20)]
@@ -28,8 +37,19 @@ namespace Model.Entitites
         [ForeignKey("Land")]
         public string LandCode { get; set; }
         public int CampusId { get; set; }
-        public virtual Campus Campus { get; set; }  //nav prop // virtual for Lazy loading with proxies
+        private Campus campus;
+        public Campus Campus            //nav prop 
+        {
+            get => lazyLoader.Load(this, ref campus);
+            set => campus = value;
+        }
         public Geslacht Geslacht { get; set; }
-        public virtual Land Land { get; set; } // nav prop // virtual for Lazy loading with proxies
+        private Land land;
+        public Land Land                // nav prop 
+        {
+            get => lazyLoader.Load(this, ref land);
+
+            set => land = value;
+        }
     }
 }
