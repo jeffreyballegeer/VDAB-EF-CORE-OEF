@@ -14,7 +14,8 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //GetAllDocentsWithCampus_ExampleForEagerLoading();
 //GetAllDocentsMatchingSearchIncludeCampus_ExampleForEagerLoading();
 //GetAllCampusses_KeepResultsetUsingToList();
-AddNewEntity();
+//AddNewEntity();
+AddMultipleEntities();
 
 #region Methods
 
@@ -210,5 +211,45 @@ void AddNewEntity()
     context.Campussen.Add(campus); 
     context.SaveChanges();
     Console.WriteLine(campus.CampusId);
+}
+
+void AddMultipleEntities()
+{
+    var campus2 = new Campus
+    {
+        Naam = "Campus02",
+        Straat = "Straat02",
+        Huisnummer = "2",
+        Postcode = "2222",
+        Gemeente = "Gemeente02"
+    };
+    var campus3 = new Campus
+    {
+        Naam = "Campus03",
+        Straat = "Straat03",
+        Huisnummer = "3",
+        Postcode = "3333",
+        Gemeente = "Gemeente03"
+    };
+    var campus4 = new Campus
+    {
+        Naam = "Campus04",
+        Straat = "Straat04",
+        Huisnummer = "4",
+        Postcode = "4444",
+        Gemeente = "Gemeente04"
+    };
+    var campus5 = new Campus
+    {
+        Naam = "Campus05",
+        Straat = "Straat05",
+        Huisnummer = "5",
+        Postcode = "5555",
+        Gemeente = "Gemeente05"
+    };
+    using var context = new EFOpleidingenContext();
+    context.Campussen.AddRange(campus2, campus3);
+    context.Campussen.AddRange(new List<Campus> { campus4, campus5 });
+    context.SaveChanges();
 }
 #endregion
