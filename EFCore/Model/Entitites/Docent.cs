@@ -34,5 +34,13 @@ namespace Model.Entitites
         public Campus Campus { get; set; }           //nav prop 
         public Geslacht Geslacht { get; set; }
         public Land Land { get; set; }               // nav prop 
+
+
+        #region methods
+        public void Opslag(decimal bedrag)
+        {
+            Wedde += bedrag;
+        }
+        #endregion
     }
 }

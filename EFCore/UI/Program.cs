@@ -17,10 +17,10 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //AddNewEntity();
 //AddMultipleEntities();
 //AddAssociatedEntities();
-AddMixedNewAndExistingEntities_FromOneSide();
-AddMixedNewAndExistingEntities_FromManySide();
-
-
+//AddMixedNewAndExistingEntities_FromOneSide();
+//AddMixedNewAndExistingEntities_FromManySide();
+//UpdateOneEntity();
+UpdateSomeSelectedEntities();
 
 #region Methods
 
@@ -217,7 +217,6 @@ void AddNewEntity()
     context.SaveChanges();
     Console.WriteLine(campus.CampusId);
 }
-
 void AddMultipleEntities()
 {
     var campus2 = new Campus
@@ -257,7 +256,6 @@ void AddMultipleEntities()
     context.Campussen.AddRange(new List<Campus> { campus4, campus5 });
     context.SaveChanges();
 }
-
 void AddAssociatedEntities()
 {
     //hier gaan we een nieuwe docent toevoegen die werkt aan een nieuwe campus
@@ -334,7 +332,6 @@ void AddMixedNewAndExistingEntities_FromManySide()
     context.Docenten.Add(docent5);
     context.SaveChanges();
 }
-
 void AddMixedNewAndExistingEntities_FromOneSide()
 {
     //Executed from the relationside : One
@@ -354,5 +351,45 @@ void AddMixedNewAndExistingEntities_FromOneSide()
     }
     else
         Console.WriteLine("Campus 1 niet gevonden");
+}
+
+void UpdateOneEntity()
+{
+    Console.Write("DocentNr.:");
+    if (int.TryParse(Console.ReadLine(), out int docentNr))
+    {
+        using var context = new EFOpleidingenContext();
+        var docent = context.Docenten.Find(docentNr);
+        if (docent is not null)
+        {
+            Console.WriteLine("Wedde:{0}", docent.Wedde);
+            Console.Write("Bedrag:");
+            if (decimal.TryParse(Console.ReadLine(), out decimal bedrag))
+            {
+                docent.Opslag(bedrag);
+                context.SaveChanges();
+            }
+            else
+                Console.WriteLine("Tik een getal");
+        }
+        else
+            Console.WriteLine("Docent niet gevonden");
+    }
+    else
+        Console.WriteLine("Tik een getal");
+}
+
+void UpdateSomeSelectedEntities()
+{
+    Console.Write("Bovengrens : ");
+    if (int.TryParse(Console.ReadLine(), out int grens))
+    {
+        using var context = new EFOpleidingenContext();
+        foreach (var docent in context.Docenten)
+            if (docent.Wedde <= grens) docent.Opslag(100m);
+        context.SaveChanges();
+    }
+    else
+        Console.WriteLine("Tik een getal");
 }
 #endregion
