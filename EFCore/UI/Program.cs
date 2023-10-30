@@ -13,7 +13,8 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //GetAllDocentsWithNameX_TestForLazyLoadingUsingProxies();
 //GetAllDocentsWithCampus_ExampleForEagerLoading();
 //GetAllDocentsMatchingSearchIncludeCampus_ExampleForEagerLoading();
-GetAllCampusses_KeepResultsetUsingToList();
+//GetAllCampusses_KeepResultsetUsingToList();
+AddNewEntity();
 
 #region Methods
 
@@ -28,8 +29,6 @@ void GetAllDocentsFromDb_LogSQLToConsole()
     Console.WriteLine(context.Docenten.ToQueryString());
     Console.WriteLine(context.Campussen.ToQueryString());
 }
-
-
 void GetAllDocentsWithMinimumWage_UsingLinq()
 {
     Console.Write("Minimum wedde:");
@@ -64,7 +63,6 @@ void GetAllDocentsWithMinimumWage_UsingQueryMethods()
     else
         Console.WriteLine("Dat was geen getal!");
 }
-
 void GetDocentOnPrimaryKey_UsingFind()
 {
     //Demonstrating .Find : search on primary key
@@ -78,7 +76,6 @@ void GetDocentOnPrimaryKey_UsingFind()
     else
         Console.WriteLine("U tikte geen getal");
 }
-
 void GetPartialObjects_UsingLINQ()
 {
     //Demonstrating select new {...} : Search only selected fields using LINQ
@@ -91,7 +88,6 @@ void GetPartialObjects_UsingLINQ()
     foreach (var campusDeel in query2)
         Console.WriteLine("{0}: {1}", campusDeel.CampusId, campusDeel.Naam);
 }
-
 void GetPartialObjects_UsingQueryMethods()
 {
     //Demonstrating select new {...} : Search only selected fields using Query Methods
@@ -104,7 +100,6 @@ void GetPartialObjects_UsingQueryMethods()
     foreach (var campusDeel in query2)
         Console.WriteLine("{0}: {1}", campusDeel.CampusId, campusDeel.Naam);
 }
-
 void GetAllDocents_GroupByName()
 {
     //use group, by & into to group results of a query
@@ -123,7 +118,6 @@ void GetAllDocents_GroupByName()
         Console.WriteLine(voornaamStatistiek.Aantal + " keer.");
     }
 }
-
 void GetAllDocentsWithNameX_TestForLazyLoadingUsingProxies()
 {
     // to be used with proxies eager loading enabled (.UseLazyLoadingProxies() in program.cs & virtual nav props in entities
@@ -137,8 +131,6 @@ void GetAllDocentsWithNameX_TestForLazyLoadingUsingProxies()
     foreach (var docent in query)
         Console.WriteLine("{0} : {1}", docent.Naam, docent.Campus.Naam);
 }
-
-
 void GetAllDocentsWithCampus_ExampleForEagerLoading()
 {
     using var context = new EFOpleidingenContext();
@@ -177,7 +169,6 @@ void GetAllDocentsMatchingSearchIncludeCampus_ExampleForEagerLoading()
         Console.WriteLine();
     }
 }
-
 void GetAllCampusses_KeepResultsetUsingToList()
 {
     List<Campus> campussen;
@@ -203,5 +194,21 @@ void GetAllCampusses_KeepResultsetUsingToList()
                 orderby campus.Naam
                 select campus).ToList();
     }
+}
+
+void AddNewEntity()
+{
+    var campus = new Campus
+    {
+        Naam = "Campus01",
+        Straat = "Straat01",
+        Huisnummer = "1",
+        Postcode = "1111",
+        Gemeente = "Gemeente01"
+    };
+    using var context = new EFOpleidingenContext();
+    context.Campussen.Add(campus); 
+    context.SaveChanges();
+    Console.WriteLine(campus.CampusId);
 }
 #endregion
