@@ -13,13 +13,7 @@ namespace Model.Entitites
 {
     public partial class Docent
     {
-        private readonly ILazyLoader lazyLoader;
-
         public Docent() { }                                 // empty ctor used in EFOpleidingenContext seeding
-        public Docent(ILazyLoader lazyLoader)               // lazyloader by dependency injection
-        {
-            this.lazyLoader = lazyLoader;
-        }
 
         public int DocentId { get; set; }
         [Required]
@@ -37,19 +31,8 @@ namespace Model.Entitites
         [ForeignKey("Land")]
         public string LandCode { get; set; }
         public int CampusId { get; set; }
-        private Campus campus;
-        public Campus Campus            //nav prop 
-        {
-            get => lazyLoader.Load(this, ref campus);
-            set => campus = value;
-        }
+        public Campus Campus { get; set; }           //nav prop 
         public Geslacht Geslacht { get; set; }
-        private Land land;
-        public Land Land                // nav prop 
-        {
-            get => lazyLoader.Load(this, ref land);
-
-            set => land = value;
-        }
+        public Land Land { get; set; }               // nav prop 
     }
 }

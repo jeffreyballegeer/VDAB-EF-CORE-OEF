@@ -11,11 +11,6 @@ namespace Model.Entitites
 {
     public class Campus
     {
-        private readonly ILazyLoader lazyLoader;
-        public Campus(ILazyLoader lazyLoader)       // lazyload by dependency injection
-        {
-            this.lazyLoader = lazyLoader;
-        }
         public Campus()
         {
             Docenten = new List<Docent>();
@@ -33,12 +28,6 @@ namespace Model.Entitites
         [NotMapped]
         public string Commentaar { get; set; }
 
-        // navigation property (in een campus werken meerdere docenten) 
-        private ICollection<Docent> docenten;
-        public ICollection<Docent> Docenten
-        {
-            get => lazyLoader.Load(this, ref docenten);
-            set => docenten = value;
-        }
+        public ICollection<Docent> Docenten { get; set; }// navigation property (in een campus werken meerdere docenten) 
     }
 }

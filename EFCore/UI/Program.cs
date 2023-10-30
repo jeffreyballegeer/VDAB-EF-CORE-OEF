@@ -2,15 +2,15 @@
 using Model.Entitites;
 
 
-//GetAllDocentsFromDb_LogSQLToConsole();
-//GetAllDocentsWithMinimumWage_UsingLinq();
-//GetAllDocentsWithMinimumWage_UsingQueryMethods();
-//GetDocentOnPrimaryKey_UsingFind();
-//GetPartialObjects_UsingLINQ();
-//GetPartialObjects_UsingQueryMethods();
-//GetAllDocents_GroupByName();
-GetAllDocentsWithNameX_TestForLazyLoadingUsingProxies();
-
+GetAllDocentsFromDb_LogSQLToConsole();
+GetAllDocentsWithMinimumWage_UsingLinq();
+GetAllDocentsWithMinimumWage_UsingQueryMethods();
+GetDocentOnPrimaryKey_UsingFind();
+GetPartialObjects_UsingLINQ();
+GetPartialObjects_UsingQueryMethods();
+GetAllDocents_GroupByName();
+//GetAllDocentsWithNameX_TestForLazyLoadingUsingProxies();
+GetAllDocentsWithCampus_ExampleForEagerLoading();
 
 #region Methods
 
@@ -124,6 +124,7 @@ void GetAllDocents_GroupByName()
 void GetAllDocentsWithNameX_TestForLazyLoadingUsingProxies()
 {
     // to be used with proxies eager loading enabled (.UseLazyLoadingProxies() in program.cs & virtual nav props in entities
+    // running on eager loading will yield null error on campus.name
     using var context = new EFOpleidingenContext();
     Console.Write("Voornaam:");
     var voornaam = Console.ReadLine();
@@ -134,5 +135,18 @@ void GetAllDocentsWithNameX_TestForLazyLoadingUsingProxies()
         Console.WriteLine("{0} : {1}", docent.Naam, docent.Campus.Naam);
 }
 
+
+void GetAllDocentsWithCampus_ExampleForEagerLoading()
+{
+    using var context = new EFOpleidingenContext();
+    Console.Write("Voornaam:");
+    var voornaam = Console.ReadLine();
+    //the include means: for all the Docenten, include the related Campus data
+    var query = from docent in context.Docenten.Include("Campus")
+                where docent.Voornaam == voornaam
+                select docent;
+    foreach (var docent in query)
+        Console.WriteLine("{0} : {1}", docent.Naam, docent.Campus.Naam);
+}
 
 #endregion
