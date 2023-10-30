@@ -157,11 +157,16 @@ void GetAllDocentsMatchingSearchIncludeCampus_ExampleForEagerLoading()
     using var context = new EFOpleidingenContext();
     Console.Write("Geef (een deel van) de naam van de campus:");
     var deelNaam = Console.ReadLine();
+    //using Query Methods
     var query = from campus in context.Campussen.Include("Docenten")
                 where campus.Naam.Contains(deelNaam)
                 orderby campus.Naam
                 select campus;
-    foreach (var campus in query)
+    //using LINQ
+    var query2 = context.Campussen.Include("Docenten")
+                                  .Where(campus => campus.Naam.Contains(deelNaam))
+                                  .OrderBy(campus => campus.Naam);
+    foreach (var campus in query2) // or query2
     {
         var campusNaam = campus.Naam;
         Console.WriteLine(campusNaam);
