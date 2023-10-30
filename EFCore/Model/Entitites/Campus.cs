@@ -35,10 +35,10 @@ namespace Model.Entitites
 
         // navigation property (in een campus werken meerdere docenten) 
         private ICollection<Docent> docenten;
-        public ICollection<Docent> Docenten {
+        public ICollection<Docent> Docenten
+        {
             get => lazyLoader.Load(this, ref docenten);
             set => docenten = value;
-
-                }
+        }
     }
 }
