@@ -15,7 +15,10 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //GetAllDocentsMatchingSearchIncludeCampus_ExampleForEagerLoading();
 //GetAllCampusses_KeepResultsetUsingToList();
 //AddNewEntity();
-AddMultipleEntities();
+//AddMultipleEntities();
+AddAssociatedEntities();
+
+
 
 #region Methods
 
@@ -251,5 +254,50 @@ void AddMultipleEntities()
     context.Campussen.AddRange(campus2, campus3);
     context.Campussen.AddRange(new List<Campus> { campus4, campus5 });
     context.SaveChanges();
+}
+
+void AddAssociatedEntities()
+{
+    //hier gaan we een nieuwe docent toevoegen die werkt aan een nieuwe campus
+    var campus7 = new Campus
+    {
+        Naam = "Campus07",
+        Straat = "Straat07",
+        Huisnummer = "7",
+        Postcode = "7777",
+        Gemeente = "Gemeente07"
+    };
+    var docent2 = new Docent
+    {
+        Voornaam = "Voornaam02",
+        Familienaam = "Docent02",
+        Wedde = 2222,
+        LandCode = "NL"
+    };
+    campus7.Docenten.Add(docent2);
+    using var context = new EFOpleidingenContext();
+    context.Campussen.Add(campus7);
+    context.SaveChanges();
+
+    //hier gaan we een nieuwe campus toevoegen waar een nieuwe docent werkt
+    var campus8 = new Campus
+    {
+        Naam = "Campus08",
+        Straat = "Straat08",
+        Huisnummer = "8",
+        Postcode = "8888",
+        Gemeente = "Gemeente08"
+    };
+    var docent3 = new Docent
+    {
+        Voornaam = "Voornaam03",
+        Familienaam = "Docent03",
+        Wedde = 3333,
+        LandCode = "IT"
+    };
+    docent3.Campus = campus8;
+    using var context2 = new EFOpleidingenContext();
+    context2.Docenten.Add(docent3);
+    context2.SaveChanges();
 }
 #endregion
