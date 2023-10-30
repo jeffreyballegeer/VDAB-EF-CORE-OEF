@@ -20,7 +20,8 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //AddMixedNewAndExistingEntities_FromOneSide();
 //AddMixedNewAndExistingEntities_FromManySide();
 //UpdateOneEntity();
-UpdateSomeSelectedEntities();
+//UpdateSomeSelectedEntities();
+UpdateAssociatedEntities();
 
 #region Methods
 
@@ -213,7 +214,7 @@ void AddNewEntity()
         Gemeente = "Gemeente01"
     };
     using var context = new EFOpleidingenContext();
-    context.Campussen.Add(campus); 
+    context.Campussen.Add(campus);
     context.SaveChanges();
     Console.WriteLine(campus.CampusId);
 }
@@ -327,7 +328,7 @@ void AddMixedNewAndExistingEntities_FromManySide()
         Familienaam = "Docent05",
         Wedde = 5555,
         LandCode = "LU",
-        CampusId = 1 
+        CampusId = 1
     };
     context.Docenten.Add(docent5);
     context.SaveChanges();
@@ -346,7 +347,7 @@ void AddMixedNewAndExistingEntities_FromOneSide()
     var campus = context.Campussen.Find(1);
     if (campus != null)
     {
-        campus.Docenten.Add(docent); 
+        campus.Docenten.Add(docent);
         context.SaveChanges();
     }
     else
@@ -391,5 +392,18 @@ void UpdateSomeSelectedEntities()
     }
     else
         Console.WriteLine("Tik een getal");
+}
+
+void UpdateAssociatedEntities()
+{
+    using var context = new EFOpleidingenContext();
+    var campus1 = context.Campussen.Include("Docenten")
+        .FirstOrDefault(c => c.CampusId == 1);          //FirstOrDefault needed because we use also .Include
+    if (campus1 != null)
+    {
+        foreach (var docent in campus1.Docenten)
+        docent.Opslag(10m);
+        context.SaveChanges();
+    }
 }
 #endregion
