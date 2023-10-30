@@ -11,6 +11,8 @@ namespace Model.Entities
 {
     public class Rekening
     {
+        public Rekening() { }
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string RekeningNr { get; set; }
 

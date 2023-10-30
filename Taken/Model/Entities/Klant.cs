@@ -10,9 +10,11 @@ namespace Model.Entities
 {
     public class Klant
     {
+        public Klant() { }
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int KlantNr { get; set; }
         public string Voornaam { get; set; }
-        public ICollection<Rekening> Rekeningen { get; set;}
+        public ICollection<Rekening> Rekeningen { get; set; }
     }
 }
