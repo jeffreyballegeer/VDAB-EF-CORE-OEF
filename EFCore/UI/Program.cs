@@ -21,7 +21,8 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //AddMixedNewAndExistingEntities_FromManySide();
 //UpdateOneEntity();
 //UpdateSomeSelectedEntities();
-UpdateAssociatedEntities();
+//UpdateAssociatedEntities();
+UpdateAssociationOfdEntity_FromManySide();
 
 #region Methods
 
@@ -405,5 +406,38 @@ void UpdateAssociatedEntities()
         docent.Opslag(10m);
         context.SaveChanges();
     }
+}
+
+void UpdateAssociationOfdEntity_FromManySide()
+{
+    //Executed from the relationside : Many,
+    //By reading the docent, then the newly associated campus and associating it to the read docent using the Campus property
+    using var context = new EFOpleidingenContext();
+    var docent1 = context.Docenten.Find(1);
+    if (docent1 is not null)
+    {
+        var campus6 = context.Campussen.Find(6);
+        if (campus6 is not null)
+        {
+            docent1.Campus = campus6;
+            context.SaveChanges();
+        }
+        else
+            Console.WriteLine("Campus 6 niet gevonden");
+    }
+    else
+        Console.WriteLine("Docent 1 niet gevonden");
+
+    //Executed from the relationside : Many
+    //By reading the docent, then changing the associated campus using the CampusId property
+    using var context2 = new EFOpleidingenContext();
+    var docent2 = context.Docenten.Find(1);
+    if (docent2 is not null)
+    {
+        docent2.CampusId = 2;
+        context.SaveChanges();
+    }
+    else
+        Console.WriteLine("Docent 1 niet gevonden");
 }
 #endregion
