@@ -22,7 +22,8 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //UpdateOneEntity();
 //UpdateSomeSelectedEntities();
 //UpdateAssociatedEntities();
-UpdateAssociationOfdEntity_FromManySide();
+//UpdateAssociationOfdEntity_FromManySide();
+UpdateAssociationOfdEntity_FromOneSide();
 
 #region Methods
 
@@ -403,7 +404,7 @@ void UpdateAssociatedEntities()
     if (campus1 != null)
     {
         foreach (var docent in campus1.Docenten)
-        docent.Opslag(10m);
+            docent.Opslag(10m);
         context.SaveChanges();
     }
 }
@@ -436,6 +437,26 @@ void UpdateAssociationOfdEntity_FromManySide()
     {
         docent2.CampusId = 2;
         context.SaveChanges();
+    }
+    else
+        Console.WriteLine("Docent 1 niet gevonden");
+}
+
+void UpdateAssociationOfdEntity_FromOneSide()
+{
+    //Executed from the relationside : One
+    using var context = new EFOpleidingenContext();
+    var docent1 = context.Docenten.Find(1);
+    if (docent1 is not null)
+    {
+        var campus3 = context.Campussen.Find(3);
+        if (campus3 is not null)
+        {
+            campus3.Docenten.Add(docent1); 
+            context.SaveChanges();
+        }
+        else
+            Console.WriteLine("Campus 3 niet gevonden");
     }
     else
         Console.WriteLine("Docent 1 niet gevonden");
