@@ -12,7 +12,8 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //GetAllDocents_GroupByName();
 //GetAllDocentsWithNameX_TestForLazyLoadingUsingProxies();
 //GetAllDocentsWithCampus_ExampleForEagerLoading();
-GetAllDocentsMatchingSearchIncludeCampus_ExampleForEagerLoading();
+//GetAllDocentsMatchingSearchIncludeCampus_ExampleForEagerLoading();
+GetAllCampusses_KeepResultsetUsingToList();
 
 #region Methods
 
@@ -174,6 +175,33 @@ void GetAllDocentsMatchingSearchIncludeCampus_ExampleForEagerLoading()
         foreach (var docent in campus.Docenten)
             Console.WriteLine(docent.Naam);
         Console.WriteLine();
+    }
+}
+
+void GetAllCampusses_KeepResultsetUsingToList()
+{
+    List<Campus> campussen;
+    using var context = new EFOpleidingenContext();
+    var query = from campus in context.Campussen
+                orderby campus.Naam
+                select campus;
+    campussen = query.ToList(); // this allows usage of the resultset outside of using-statement + no querying DB only once
+    foreach (var campus in campussen)       //no extra DB query on this line
+        Console.WriteLine(campus.Naam);
+    Console.WriteLine();
+    foreach (var campus in campussen)       //no extra DB query on this line
+        Console.WriteLine(campus.Naam);
+    //--------------------
+    Console.WriteLine("Now use resultset outside of using statement :");
+    //below code shows that using the resultset can happen outside the using statement. (FindAllCampussen gets data in the getter)
+    foreach (var campus in FindAllCampussen())
+        Console.WriteLine(campus.Naam);
+    List<Campus> FindAllCampussen()
+    {
+        using var context = new EFOpleidingenContext();
+        return (from campus in context.Campussen
+                orderby campus.Naam
+                select campus).ToList();
     }
 }
 #endregion
