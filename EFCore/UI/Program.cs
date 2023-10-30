@@ -16,7 +16,9 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //GetAllCampusses_KeepResultsetUsingToList();
 //AddNewEntity();
 //AddMultipleEntities();
-AddAssociatedEntities();
+//AddAssociatedEntities();
+AddMixedNewAndExistingEntities_FromOneSide();
+AddMixedNewAndExistingEntities_FromManySide();
 
 
 
@@ -299,5 +301,58 @@ void AddAssociatedEntities()
     using var context2 = new EFOpleidingenContext();
     context2.Docenten.Add(docent3);
     context2.SaveChanges();
+}
+void AddMixedNewAndExistingEntities_FromManySide()
+{
+    //Executed from the relationside : Many
+    var docent4 = new Docent
+    {
+        Voornaam = "Voornaam04",
+        Familienaam = "Docent04",
+        Wedde = 4444,
+        LandCode = "IT"
+    };
+    using var context = new EFOpleidingenContext();
+    var campus1 = context.Campussen.Find(1);
+    if (campus1 != null)
+    {
+        context.Docenten.Add(docent4);
+        docent4.Campus = campus1;
+        context.SaveChanges();
+    }
+    else
+        Console.WriteLine("Campus 1 niet gevonden");
+
+    var docent5 = new Docent
+    {
+        Voornaam = "Voornaam05",
+        Familienaam = "Docent05",
+        Wedde = 5555,
+        LandCode = "LU",
+        CampusId = 1 
+    };
+    context.Docenten.Add(docent5);
+    context.SaveChanges();
+}
+
+void AddMixedNewAndExistingEntities_FromOneSide()
+{
+    //Executed from the relationside : One
+    var docent = new Docent
+    {
+        Voornaam = "Voornaam06",
+        Familienaam = "Docent06",
+        Wedde = 6666,
+        LandCode = "DE"
+    };
+    using var context = new EFOpleidingenContext();
+    var campus = context.Campussen.Find(1);
+    if (campus != null)
+    {
+        campus.Docenten.Add(docent); 
+        context.SaveChanges();
+    }
+    else
+        Console.WriteLine("Campus 1 niet gevonden");
 }
 #endregion
