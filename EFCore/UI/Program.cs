@@ -1,16 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Model.Entitites;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
-GetAllDocentsFromDb_LogSQLToConsole();
-GetAllDocentsWithMinimumWage_UsingLinq();
-GetAllDocentsWithMinimumWage_UsingQueryMethods();
-GetDocentOnPrimaryKey_UsingFind();
-GetPartialObjects_UsingLINQ();
-GetPartialObjects_UsingQueryMethods();
-GetAllDocents_GroupByName();
+//GetAllDocentsFromDb_LogSQLToConsole();
+//GetAllDocentsWithMinimumWage_UsingLinq();
+//GetAllDocentsWithMinimumWage_UsingQueryMethods();
+//GetDocentOnPrimaryKey_UsingFind();
+//GetPartialObjects_UsingLINQ();
+//GetPartialObjects_UsingQueryMethods();
+//GetAllDocents_GroupByName();
 //GetAllDocentsWithNameX_TestForLazyLoadingUsingProxies();
-GetAllDocentsWithCampus_ExampleForEagerLoading();
+//GetAllDocentsWithCampus_ExampleForEagerLoading();
+GetAllDocentsMatchingSearchIncludeCampus_ExampleForEagerLoading();
 
 #region Methods
 
@@ -142,11 +144,31 @@ void GetAllDocentsWithCampus_ExampleForEagerLoading()
     Console.Write("Voornaam:");
     var voornaam = Console.ReadLine();
     //the include means: for all the Docenten, include the related Campus data
+
     var query = from docent in context.Docenten.Include("Campus")
                 where docent.Voornaam == voornaam
                 select docent;
     foreach (var docent in query)
         Console.WriteLine("{0} : {1}", docent.Naam, docent.Campus.Naam);
+    Console.WriteLine(query.ToQueryString());
 }
-
+void GetAllDocentsMatchingSearchIncludeCampus_ExampleForEagerLoading()
+{
+    using var context = new EFOpleidingenContext();
+    Console.Write("Geef (een deel van) de naam van de campus:");
+    var deelNaam = Console.ReadLine();
+    var query = from campus in context.Campussen.Include("Docenten")
+                where campus.Naam.Contains(deelNaam)
+                orderby campus.Naam
+                select campus;
+    foreach (var campus in query)
+    {
+        var campusNaam = campus.Naam;
+        Console.WriteLine(campusNaam);
+        Console.WriteLine(new string('-', campusNaam.Length));
+        foreach (var docent in campus.Docenten)
+            Console.WriteLine(docent.Naam);
+        Console.WriteLine();
+    }
+}
 #endregion
