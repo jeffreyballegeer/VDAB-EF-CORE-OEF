@@ -12,8 +12,8 @@ using Model.Entitites;
 namespace Model.Migrations
 {
     [DbContext(typeof(EFOpleidingenContext))]
-    [Migration("20231012131304_seeding")]
-    partial class seeding
+    [Migration("20231030143324_initial_migration")]
+    partial class initial_migration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -145,7 +145,6 @@ namespace Model.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("LandCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Voornaam")
@@ -4140,8 +4139,7 @@ namespace Model.Migrations
                     b.HasOne("Model.Entitites.Land", "Land")
                         .WithMany("Docenten")
                         .HasForeignKey("LandCode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Campus");
 

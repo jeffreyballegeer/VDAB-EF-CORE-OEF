@@ -1,0 +1,8 @@
+cursus punt 9.2 probleem met migrations : 
+Migrations verwijderd en vanaf nul gebouwd omdat de update om nav prop land in tabel docent niet wou updaten met volgende code in de EFOpleidingenContext.cs : 
+ modelBuilder.Entity<Docent>()
+                        .HasOne(d => d.Land)
+                        .WithMany(l => l.Docenten)
+                        .OnDelete(DeleteBehavior.SetNull);
+-> migratiefile blijft leeg.
+Geprobeerd met chatgpt de code te genereren voor up en down, maar lijkt niet te werken.

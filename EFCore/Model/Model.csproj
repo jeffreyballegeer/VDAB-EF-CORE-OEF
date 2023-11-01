@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations - kopie\**" />
+    <EmbeddedResource Remove="Migrations - kopie\**" />
+    <None Remove="Migrations - kopie\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Migrations\" />
     <Folder Include="Services\" />
   </ItemGroup>

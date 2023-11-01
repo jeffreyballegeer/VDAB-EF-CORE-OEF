@@ -37,10 +37,16 @@ namespace Model.Entitites
                     .UseSqlServer(connectionString, options => options.MaxBatchSize(150));
             //optionsBuilder.LogTo(Console.WriteLine);              // log sql query to console
         }
-            
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            #region Campussen
+            #region Docent
+            modelBuilder.Entity<Docent>()
+                        .HasOne(d => d.Land)
+                        .WithMany(l => l.Docenten)
+                        .OnDelete(DeleteBehavior.SetNull);
+            #endregion
+            #region Campussen_hasdata
             modelBuilder.Entity<Campus>().HasData(
                 new Campus
                 {
@@ -108,8 +114,13 @@ namespace Model.Entitites
             );
             #endregion
 
-            #region Docent
-            modelBuilder.Entity<Docent>().HasData(
+            #region Docent_hasdata
+            modelBuilder.Entity<Docent>()
+                .HasOne(d => d.Land)
+                .WithMany(l => l.Docenten)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Docent>()
+                .HasData(
                 new Docent
                 {
                     DocentId = 001,
@@ -4118,8 +4129,9 @@ namespace Model.Entitites
                     CampusId = 1,
                     LandCode = "BE"
                 }
-                #endregion
+
         );
+        #endregion
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Model.Entitites
 {
     public partial class Docent
     {
-        public Docent() { }                                 // empty ctor used in EFOpleidingenContext seeding
+        public Docent() { }                          // empty ctor used in EFOpleidingenContext seeding
 
         public int DocentId { get; set; }
         [Required]
@@ -29,11 +29,11 @@ namespace Model.Entitites
         public DateTime InDienst { get; set; }
         public bool? HeeftRijbewijs { get; set; }
         [ForeignKey("Land")]
-        public string LandCode { get; set; }
+        public string? LandCode { get; set; }
         public int CampusId { get; set; }
         public Campus Campus { get; set; }           //nav prop 
         public Geslacht Geslacht { get; set; }
-        public Land Land { get; set; }               // nav prop 
+        public Land? Land { get; set; }              // nav prop 
 
 
         #region methods

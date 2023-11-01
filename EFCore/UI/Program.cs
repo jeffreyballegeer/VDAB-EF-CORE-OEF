@@ -23,7 +23,14 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //UpdateSomeSelectedEntities();
 //UpdateAssociatedEntities();
 //UpdateAssociationOfdEntity_FromManySide();
-UpdateAssociationOfdEntity_FromOneSide();
+//UpdateAssociationOfdEntity_FromOneSide();
+//RemoveOneEntity();
+
+
+//AddMixedNewAndExistingEntities_FromManySide();
+RemoveOneEntityWithAssociatedEntities();
+
+
 
 #region Methods
 
@@ -127,6 +134,7 @@ void GetAllDocents_GroupByName()
         Console.WriteLine(voornaamStatistiek.Aantal + " keer.");
     }
 }
+
 void GetAllDocentsWithNameX_TestForLazyLoadingUsingProxies()
 {
     // to be used with proxies eager loading enabled (.UseLazyLoadingProxies() in program.cs & virtual nav props in entities
@@ -178,6 +186,7 @@ void GetAllDocentsMatchingSearchIncludeCampus_ExampleForEagerLoading()
         Console.WriteLine();
     }
 }
+
 void GetAllCampusses_KeepResultsetUsingToList()
 {
     List<Campus> campussen;
@@ -308,10 +317,10 @@ void AddMixedNewAndExistingEntities_FromManySide()
     //Executed from the relationside : Many
     var docent4 = new Docent
     {
-        Voornaam = "Voornaam04",
+        Voornaam = "VoornaamBLAH",
         Familienaam = "Docent04",
         Wedde = 4444,
-        LandCode = "IT"
+        LandCode = "GB"
     };
     using var context = new EFOpleidingenContext();
     var campus1 = context.Campussen.Find(1);
@@ -326,10 +335,10 @@ void AddMixedNewAndExistingEntities_FromManySide()
 
     var docent5 = new Docent
     {
-        Voornaam = "Voornaam05",
+        Voornaam = "VoornaamBLOH",
         Familienaam = "Docent05",
         Wedde = 5555,
-        LandCode = "LU",
+        LandCode = "GB",
         CampusId = 1
     };
     context.Docenten.Add(docent5);
@@ -381,7 +390,6 @@ void UpdateOneEntity()
     else
         Console.WriteLine("Tik een getal");
 }
-
 void UpdateSomeSelectedEntities()
 {
     Console.Write("Bovengrens : ");
@@ -395,7 +403,6 @@ void UpdateSomeSelectedEntities()
     else
         Console.WriteLine("Tik een getal");
 }
-
 void UpdateAssociatedEntities()
 {
     using var context = new EFOpleidingenContext();
@@ -408,7 +415,6 @@ void UpdateAssociatedEntities()
         context.SaveChanges();
     }
 }
-
 void UpdateAssociationOfdEntity_FromManySide()
 {
     //Executed from the relationside : Many,
@@ -441,7 +447,6 @@ void UpdateAssociationOfdEntity_FromManySide()
     else
         Console.WriteLine("Docent 1 niet gevonden");
 }
-
 void UpdateAssociationOfdEntity_FromOneSide()
 {
     //Executed from the relationside : One
@@ -460,5 +465,35 @@ void UpdateAssociationOfdEntity_FromOneSide()
     }
     else
         Console.WriteLine("Docent 1 niet gevonden");
+}
+
+void RemoveOneEntity()
+{
+    Console.Write("Nummer docent:");
+    if (int.TryParse(Console.ReadLine(), out int docentNr))
+    {
+        using var context = new EFOpleidingenContext();
+        var docent = context.Docenten.Find(docentNr);
+        if (docent != null)
+        {
+            context.Docenten.Remove(docent);
+            context.SaveChanges();
+        }
+        else
+            Console.WriteLine("Docent niet gevonden");
+    }
+    else
+        Console.WriteLine("Tik een getal");
+}
+
+void RemoveOneEntityWithAssociatedEntities()
+{
+    using var context = new EFOpleidingenContext();
+    var duitsland = context.Landen.Find("GB");
+    if (duitsland != null)
+    {
+        context.Landen.Remove(duitsland);
+        context.SaveChanges();
+    }
 }
 #endregion
