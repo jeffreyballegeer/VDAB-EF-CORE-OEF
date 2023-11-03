@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Update;
 using Microsoft.IdentityModel.Tokens;
 using Model.Entities;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Net.Http.Headers;
 
 //var context = new EFTakenContext();
@@ -77,30 +78,91 @@ using System.Net.Http.Headers;
 
 //Excercise 8.5 : Allow deposits to account
 
-Console.WriteLine("Geef een rekeningnr");
-string gewenstRekeningNr = Console.ReadLine();
-if (!gewenstRekeningNr.IsNullOrEmpty())
+//Console.WriteLine("Geef een rekeningnr");
+//string gewenstRekeningNr = Console.ReadLine();
+//if (!gewenstRekeningNr.IsNullOrEmpty())
+//{
+//    using var context = new EFTakenContext();
+//    var gevondenRekeningNr = context.Rekeningen.Find(gewenstRekeningNr);
+//    if (gevondenRekeningNr != null)
+//    {
+//        Console.WriteLine("Welk bedrag moet gestort worden?");
+//        if (decimal.TryParse(Console.ReadLine(), out var stortBedrag))
+//        {
+//            if (stortBedrag > Decimal.Zero)
+//            {
+//                gevondenRekeningNr.Storten(stortBedrag);
+//                context.SaveChanges();
+//                Console.WriteLine("Gestort!");
+//            }
+//            else
+//                Console.WriteLine("Te storten bedrag moet meer zijn dan 0");
+//        }
+//        else
+//            Console.WriteLine("het te storten bedrag moet een getal zijn");
+//    }
+//    else Console.WriteLine("Het ingevoerde rekeningnr bestaat niet!");
+//}
+//else
+//    Console.WriteLine("U heeft niets ingevoerd");
+
+
+
+//excercise 9.3 : Delete customer if it has no accountnumbers
+//--> My TRY : had no idea how to include the rekeningen of a customer so solved with extra db call. (see course example code below my code)
+int rekeningenVanklant(int klantId)
 {
-    using var context = new EFTakenContext();
-    var gevondenRekeningNr = context.Rekeningen.Find(gewenstRekeningNr);
-    if (gevondenRekeningNr != null)
+    using var context2 = new EFTakenContext();
+    return context2.Rekeningen
+        .Where(r => r.KlantNr == klantId)
+        .Count();
+}
+
+using var context = new EFTakenContext();
+Console.WriteLine("Beschikbare klanten : ");
+foreach (Klant klant in context.Klanten)
+    Console.WriteLine($"{klant.KlantNr} - {klant.Voornaam}");
+
+Console.WriteLine("Welk klantnr moet verwijderd worden?");
+if (int.TryParse(Console.ReadLine(), out int klantNr))
+{
+    var teVerwijderenKlant = context.Klanten.Find(klantNr);
+    if (teVerwijderenKlant != null)
     {
-        Console.WriteLine("Welk bedrag moet gestort worden?");
-        if (decimal.TryParse(Console.ReadLine(), out var stortBedrag))
+        if (rekeningenVanklant(klantNr) == 0)
         {
-            if (stortBedrag > Decimal.Zero)
-            {
-                gevondenRekeningNr.Storten(stortBedrag);
-                context.SaveChanges();
-                Console.WriteLine("Gestort!");
-            }
-            else
-                Console.WriteLine("Te storten bedrag moet meer zijn dan 0");
+            context.Klanten.Remove(context.Klanten.Find(klantNr));
+            context.SaveChanges();
+            Console.WriteLine($"klantnr {klantNr} is verwijderd.");
         }
         else
-            Console.WriteLine("het te storten bedrag moet een getal zijn");
+            Console.WriteLine($"klantnr {klantNr} heeft {rekeningenVanklant(klantNr)} rekening(en) en kan niet verwijderd worden.");
     }
-    else Console.WriteLine("Het ingevoerde rekeningnr bestaat niet!");
+    else
+        Console.WriteLine($"Klantnt {klantNr} bestaat niet");
 }
 else
-    Console.WriteLine("U heeft niets ingevoerd");
+    Console.WriteLine("Dit is geen nummer");
+
+// COURSE EXAMPLE ->
+Console.Write("KlantNr:");
+if (int.TryParse(Console.ReadLine(), out var klantNummer))
+{
+    using var entities = new EFTakenContext();
+    var klant = entities.Klanten.Include("Rekeningen")
+    .FirstOrDefault(k => k.KlantNr == klantNummer);
+    if (klant is null)
+        Console.WriteLine("Klant niet gevonden");
+    else
+    {
+        if (klant.Rekeningen.Count != 0)
+            Console.WriteLine("Klant heeft nog rekeningen");
+        else
+        {
+            entities.Klanten.Remove(klant);
+            entities.SaveChanges();
+        }
+    }
+}
+else
+    Console.WriteLine("Tik een getal");
