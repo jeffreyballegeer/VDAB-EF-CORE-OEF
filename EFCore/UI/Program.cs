@@ -31,7 +31,8 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //RemoveOneEntityWithAssociatedEntities();
 
 //AddExampleData_TPH();
-AddExampleData_TPT();
+//AddExampleData_TPT();
+AddExampleData_TPC();
 
 
 #region Methods
@@ -550,6 +551,24 @@ void AddExampleData_TPT()
         Tot = DateTime.Today
     });
     context.TPTCursussen.Add(new TPTZelfstudieCursus
+    {
+        Naam = "Engels in 24 uur",
+        AantalDagen = 1
+    });
+    context.SaveChanges();
+}
+
+void AddExampleData_TPC()
+{
+    //demonstrate the workings of a Table Per Concrete Class configuration 
+    using var context = new EFOpleidingenContext();
+    context.TPCCursussen.Add(new TPCKlassikaleCursus
+    {
+        Naam = "Frans in 24 uur",
+        Van = DateTime.Today,
+        Tot = DateTime.Today
+    });
+    context.TPCCursussen.Add(new TPCZelfstudieCursus
     {
         Naam = "Engels in 24 uur",
         AantalDagen = 1

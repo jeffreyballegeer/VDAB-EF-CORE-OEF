@@ -25,6 +25,11 @@ namespace Model.Entitites
         public DbSet<TPTZelfstudieCursus> TPTZelfstudieCursussen { get; set; }
         public DbSet<TPTKlassikaleCursus> TPTKlassikaleCursussen { get; set; }
 
+        //TPC : Table Per Concrete class
+        public DbSet<TPCCursus> TPCCursussen { get; set; }
+        public DbSet<TPCZelfstudieCursus> TPCZelfstudieCursussen { get; set; }
+        public DbSet<TPCKlassikaleCursus> TPCKlassikaleCursussen { get; set; }
+
 
         // /* CONNECTIONSTRING HARDCODED : */
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -116,6 +121,13 @@ namespace Model.Entitites
             modelBuilder.Entity<TPTCursus>().ToTable("TPT");
             modelBuilder.Entity<TPTZelfstudieCursus>().ToTable("TPTZelfstudie");
             modelBuilder.Entity<TPTKlassikaleCursus>().ToTable("TPTKlassikaal");
+            #endregion
+
+            #region TPC_Mapping
+            modelBuilder.Entity<TPCCursus>().UseTpcMappingStrategy();
+            //optional
+            modelBuilder.Entity<TPCZelfstudieCursus>().ToTable("TPCZelfstudie");
+            modelBuilder.Entity<TPCKlassikaleCursus>().ToTable("TPCKlassikaal");
             #endregion
 
             #region Campussen_hasdata
