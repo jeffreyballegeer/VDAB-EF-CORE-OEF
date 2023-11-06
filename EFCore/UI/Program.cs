@@ -30,15 +30,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //AddMixedNewAndExistingEntities_FromManySide();
 //RemoveOneEntityWithAssociatedEntities();
 
-/*-----
- Update to database structure :
- - Add new table Adress containing Straat, Huisnummer, Postcode & Gemeente.
- - Add field Adres to Campus
- - Update seeding data in EFOpleidingenContext to match new database structure
- * Created a new migration 'metadres'
- Example on "Owned Types Mapping"
-------*/
-
+AddExampleData_TPH();
 
 
 #region Methods
@@ -526,5 +518,23 @@ void RemoveOneEntityWithAssociatedEntities()
         context.Landen.Remove(duitsland);
         context.SaveChanges();
     }
+}
+
+void AddExampleData_TPH()
+{
+    //demonstrate the workings of a Table Per Hierachy configuration 
+    using var context = new EFOpleidingenContext();
+    context.TPHCursussen.Add(new TPHKlassikaleCursus
+    {
+        Naam = "duits in 24 uur",
+        Van = DateTime.Today,
+        Tot = DateTime.Today
+    });
+    context.TPHCursussen.Add(new TPHZelfstudieCursus
+    {
+        Naam = "chinees in 24 uur",
+        AantalDagen = 1
+    });
+    context.SaveChanges();
 }
 #endregion

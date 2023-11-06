@@ -15,6 +15,12 @@ namespace Model.Entitites
         public DbSet<Docent> Docenten { get; set; }
         public DbSet<Land> Landen { get; set; }
 
+
+        public DbSet<TPHCursus> TPHCursussen { get; set; }
+        public DbSet<TPHZelfstudieCursus> TPHZelfstudieCursussen { get; set; }
+        public DbSet<TPHKlassikaleCursus> TPHKlassikaleCursussen { get; set; }
+
+
         // /* CONNECTIONSTRING HARDCODED : */
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -47,7 +53,7 @@ namespace Model.Entitites
                         .OnDelete(DeleteBehavior.SetNull);
             #endregion
 
-            #region Adres
+            #region Adres_owned_type
             //class "Adres" should not be an entity but consists of "owned types"
             modelBuilder.Entity<Campus>().OwnsOne(s => s.Adres);
             modelBuilder.Entity<Campus>().OwnsOne(s => s.Adres)
@@ -89,6 +95,14 @@ namespace Model.Entitites
             modelBuilder.Entity<Docent>().OwnsOne(s => s.VerblijfsAdres)
                                             .Property(b => b.Straat)
                                             .HasColumnName("StraatVerblijf");
+            #endregion
+
+            #region TPHCursus_Discriminator_Field
+            modelBuilder.Entity<TPHCursus>()
+                        .ToTable("TPHCursussen")
+                        .HasDiscriminator<string>("CursusType")
+                        .HasValue<TPHKlassikaleCursus>("K")
+                        .HasValue<TPHZelfstudieCursus>("Z");
             #endregion
 
             #region Campussen_hasdata

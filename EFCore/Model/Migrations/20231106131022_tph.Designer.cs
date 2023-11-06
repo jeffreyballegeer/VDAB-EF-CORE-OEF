@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Model.Entitites;
 
@@ -11,9 +12,11 @@ using Model.Entitites;
 namespace Model.Migrations
 {
     [DbContext(typeof(EFOpleidingenContext))]
-    partial class EFOpleidingenContextModelSnapshot : ModelSnapshot
+    [Migration("20231106131022_tph")]
+    partial class tph
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -4092,7 +4095,7 @@ namespace Model.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CursusType")
+                    b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -4102,9 +4105,9 @@ namespace Model.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TPHCursussen", (string)null);
+                    b.ToTable("TPHCursussen");
 
-                    b.HasDiscriminator<string>("CursusType").HasValue("TPHCursus");
+                    b.HasDiscriminator<string>("Discriminator").HasValue("TPHCursus");
 
                     b.UseTphMappingStrategy();
                 });
@@ -4119,7 +4122,7 @@ namespace Model.Migrations
                     b.Property<DateTime>("Van")
                         .HasColumnType("datetime2");
 
-                    b.HasDiscriminator().HasValue("K");
+                    b.HasDiscriminator().HasValue("TPHKlassikaleCursus");
                 });
 
             modelBuilder.Entity("Model.Entitites.TPHZelfstudieCursus", b =>
@@ -4129,7 +4132,7 @@ namespace Model.Migrations
                     b.Property<int>("AantalDagen")
                         .HasColumnType("int");
 
-                    b.HasDiscriminator().HasValue("Z");
+                    b.HasDiscriminator().HasValue("TPHZelfstudieCursus");
                 });
 
             modelBuilder.Entity("Model.Entitites.Campus", b =>
