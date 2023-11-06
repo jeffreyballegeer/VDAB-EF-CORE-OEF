@@ -15,10 +15,15 @@ namespace Model.Entitites
         public DbSet<Docent> Docenten { get; set; }
         public DbSet<Land> Landen { get; set; }
 
-
+        //TPH : Table Per Hierarchy
         public DbSet<TPHCursus> TPHCursussen { get; set; }
         public DbSet<TPHZelfstudieCursus> TPHZelfstudieCursussen { get; set; }
         public DbSet<TPHKlassikaleCursus> TPHKlassikaleCursussen { get; set; }
+
+        //TPT : Table Per Type
+        public DbSet<TPTCursus> TPTCursussen { get; set; }
+        public DbSet<TPTZelfstudieCursus> TPTZelfstudieCursussen { get; set; }
+        public DbSet<TPTKlassikaleCursus> TPTKlassikaleCursussen { get; set; }
 
 
         // /* CONNECTIONSTRING HARDCODED : */
@@ -103,6 +108,14 @@ namespace Model.Entitites
                         .HasDiscriminator<string>("CursusType")
                         .HasValue<TPHKlassikaleCursus>("K")
                         .HasValue<TPHZelfstudieCursus>("Z");
+            #endregion
+
+            #region TPT_Mapping
+            modelBuilder.Entity<TPTCursus>().UseTptMappingStrategy();
+            //optional 
+            modelBuilder.Entity<TPTCursus>().ToTable("TPT");
+            modelBuilder.Entity<TPTZelfstudieCursus>().ToTable("TPTZelfstudie");
+            modelBuilder.Entity<TPTKlassikaleCursus>().ToTable("TPTKlassikaal");
             #endregion
 
             #region Campussen_hasdata

@@ -30,7 +30,8 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //AddMixedNewAndExistingEntities_FromManySide();
 //RemoveOneEntityWithAssociatedEntities();
 
-AddExampleData_TPH();
+//AddExampleData_TPH();
+AddExampleData_TPT();
 
 
 #region Methods
@@ -533,6 +534,24 @@ void AddExampleData_TPH()
     context.TPHCursussen.Add(new TPHZelfstudieCursus
     {
         Naam = "chinees in 24 uur",
+        AantalDagen = 1
+    });
+    context.SaveChanges();
+}
+
+void AddExampleData_TPT()
+{
+    //demonstrate the workings of a Table Per Type configuration 
+    using var context = new EFOpleidingenContext();
+    context.TPTCursussen.Add(new TPTKlassikaleCursus
+    {
+        Naam = "Frans in 24 uur",
+        Van = DateTime.Today,
+        Tot = DateTime.Today
+    });
+    context.TPTCursussen.Add(new TPTZelfstudieCursus
+    {
+        Naam = "Engels in 24 uur",
         AantalDagen = 1
     });
     context.SaveChanges();
