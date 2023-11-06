@@ -46,61 +46,82 @@ namespace Model.Entitites
                         .WithMany(l => l.Docenten)
                         .OnDelete(DeleteBehavior.SetNull);
             #endregion
+
+            #region Adres
+            //class "Adres" should not be an entity but consists of "owned types"
+            modelBuilder.Entity<Campus>().OwnsOne(s => s.Adres);
+            modelBuilder.Entity<Campus>().OwnsOne(s => s.Adres)
+                                            .Property(b => b.Straat)
+                                            .HasColumnName("Straat");
+            modelBuilder.Entity<Campus>().OwnsOne(s => s.Adres)
+                                            .Property(b => b.Huisnummer)
+                                            .HasColumnName("HuisNr");
+            modelBuilder.Entity<Campus>().OwnsOne(s => s.Adres)
+                                            .Property(b => b.Postcode)
+                                            .HasColumnName("PostCd");
+            modelBuilder.Entity<Campus>().OwnsOne(s => s.Adres)
+                                            .Property(b => b.Gemeente)
+                                            .HasColumnName("Gemeente");
+
+            modelBuilder.Entity<Docent>().OwnsOne(s => s.ThuisAdres);
+            modelBuilder.Entity<Docent>().OwnsOne(s => s.ThuisAdres)
+                                            .Property(b => b.Gemeente)
+                                            .HasColumnName("GemeenteThuis");
+            modelBuilder.Entity<Docent>().OwnsOne(s => s.ThuisAdres)
+                                            .Property(b => b.Huisnummer)
+                                            .HasColumnName("HuisNrThuis");
+            modelBuilder.Entity<Docent>().OwnsOne(s => s.ThuisAdres)
+                                            .Property(b => b.Postcode)
+                                            .HasColumnName("PostCdThuis");
+            modelBuilder.Entity<Docent>().OwnsOne(s => s.ThuisAdres)
+                                            .Property(b => b.Straat)
+                                            .HasColumnName("StraatThuis");
+            modelBuilder.Entity<Docent>().OwnsOne(s => s.VerblijfsAdres);
+            modelBuilder.Entity<Docent>().OwnsOne(s => s.VerblijfsAdres)
+                                            .Property(b => b.Gemeente)
+                                            .HasColumnName("GemeenteVerblijf");
+            modelBuilder.Entity<Docent>().OwnsOne(s => s.VerblijfsAdres)
+                                            .Property(b => b.Huisnummer)
+                                            .HasColumnName("HuisNrVerblijf");
+            modelBuilder.Entity<Docent>().OwnsOne(s => s.VerblijfsAdres)
+                                            .Property(b => b.Postcode)
+                                            .HasColumnName("PostCdVerblijf");
+            modelBuilder.Entity<Docent>().OwnsOne(s => s.VerblijfsAdres)
+                                            .Property(b => b.Straat)
+                                            .HasColumnName("StraatVerblijf");
+            #endregion
+
             #region Campussen_hasdata
             modelBuilder.Entity<Campus>().HasData(
                 new Campus
                 {
                     CampusId = 1,
                     Naam = "Andros",
-                    Straat = "Somersstraat",
-                    Huisnummer = "22",
-                    Postcode = "2018",
-                    Gemeente = "Antwerpen"
                 },
                 new Campus
                 {
                     CampusId = 2,
                     Naam = "Delos",
-                    Straat = "Oude Vest",
-                    Huisnummer = "17",
-                    Postcode = "9200",
-                    Gemeente = "Dendermonde"
                 },
                 new Campus
                 {
                     CampusId = 3,
                     Naam = "Gavdos",
-                    Straat = "Europalaan",
-                    Huisnummer = "37",
-                    Postcode = "3600",
-                    Gemeente = "Genk"
                 },
                 new Campus
                 {
                     CampusId = 4,
                     Naam = "Hydra",
-                    Straat = "Interleuvenlaan",
-                    Huisnummer = "2",
-                    Postcode = "3001",
-                    Gemeente = "Heverlee"
                 },
                 new Campus
                 {
                     CampusId = 5,
                     Naam = "Ikaria",
-                    Straat = "Vlamingstraat",
-                    Huisnummer = "10",
-                    Postcode = "8560",
-                    Gemeente = "Wevelgem"
                 },
                 new Campus
                 {
                     CampusId = 6,
                     Naam = "Oinouses",
-                    Straat = "Akkerstraat",
-                    Huisnummer = "4",
-                    Postcode = "8400",
-                    Gemeente = "Oostende"
                 }
             );
 
@@ -4131,7 +4152,7 @@ namespace Model.Entitites
                 }
 
         );
-        #endregion
+            #endregion
         }
     }
 }

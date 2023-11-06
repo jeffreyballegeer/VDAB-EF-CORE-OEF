@@ -30,6 +30,9 @@ namespace Model.Entitites
         public bool? HeeftRijbewijs { get; set; }
         [ForeignKey("Land")]
         public string? LandCode { get; set; }
+        public Adres ThuisAdres { get; set; }
+        public Adres VerblijfsAdres { get; set; }
+
         public int CampusId { get; set; }
         public Campus Campus { get; set; }           //nav prop 
         public Geslacht Geslacht { get; set; }

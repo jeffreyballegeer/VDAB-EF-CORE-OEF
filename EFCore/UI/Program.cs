@@ -28,7 +28,16 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
 //AddMixedNewAndExistingEntities_FromManySide();
-RemoveOneEntityWithAssociatedEntities();
+//RemoveOneEntityWithAssociatedEntities();
+
+/*-----
+ Update to database structure :
+ - Add new table Adress containing Straat, Huisnummer, Postcode & Gemeente.
+ - Add field Adres to Campus
+ - Update seeding data in EFOpleidingenContext to match new database structure
+ * Created a new migration 'metadres'
+ Example on "Owned Types Mapping"
+------*/
 
 
 
@@ -219,10 +228,13 @@ void AddNewEntity()
     var campus = new Campus
     {
         Naam = "Campus01",
-        Straat = "Straat01",
-        Huisnummer = "1",
-        Postcode = "1111",
-        Gemeente = "Gemeente01"
+        Adres = new Adres                       //db structure changed
+        {
+            Straat = "Straat01",
+            Huisnummer = "1",
+            Postcode = "1111",
+            Gemeente = "Gemeente01"
+        }
     };
     using var context = new EFOpleidingenContext();
     context.Campussen.Add(campus);
@@ -234,34 +246,46 @@ void AddMultipleEntities()
     var campus2 = new Campus
     {
         Naam = "Campus02",
-        Straat = "Straat02",
-        Huisnummer = "2",
-        Postcode = "2222",
-        Gemeente = "Gemeente02"
+        Adres = new Adres                       //db structure changed
+        {
+            Straat = "Straat02",
+            Huisnummer = "2",
+            Postcode = "2222",
+            Gemeente = "Gemeente02"
+        }
     };
     var campus3 = new Campus
     {
         Naam = "Campus03",
-        Straat = "Straat03",
-        Huisnummer = "3",
-        Postcode = "3333",
-        Gemeente = "Gemeente03"
+        Adres = new Adres                       //db structure changed
+        {
+            Straat = "Straat03",
+            Huisnummer = "3",
+            Postcode = "3333",
+            Gemeente = "Gemeente03"
+        }
     };
     var campus4 = new Campus
     {
         Naam = "Campus04",
-        Straat = "Straat04",
-        Huisnummer = "4",
-        Postcode = "4444",
-        Gemeente = "Gemeente04"
+        Adres = new Adres                       //db structure changed
+        {
+            Straat = "Straat04",
+            Huisnummer = "4",
+            Postcode = "4444",
+            Gemeente = "Gemeente04"
+        }
     };
     var campus5 = new Campus
     {
         Naam = "Campus05",
-        Straat = "Straat05",
-        Huisnummer = "5",
-        Postcode = "5555",
-        Gemeente = "Gemeente05"
+        Adres = new Adres                       //db structure changed
+        {
+            Straat = "Straat05",
+            Huisnummer = "5",
+            Postcode = "5555",
+            Gemeente = "Gemeente05"
+        }
     };
     using var context = new EFOpleidingenContext();
     context.Campussen.AddRange(campus2, campus3);
@@ -274,10 +298,13 @@ void AddAssociatedEntities()
     var campus7 = new Campus
     {
         Naam = "Campus07",
-        Straat = "Straat07",
-        Huisnummer = "7",
-        Postcode = "7777",
-        Gemeente = "Gemeente07"
+        Adres = new Adres                       //db structure changed
+        {
+            Straat = "Straat07",
+            Huisnummer = "7",
+            Postcode = "7777",
+            Gemeente = "Gemeente07"
+        }
     };
     var docent2 = new Docent
     {
@@ -295,10 +322,13 @@ void AddAssociatedEntities()
     var campus8 = new Campus
     {
         Naam = "Campus08",
-        Straat = "Straat08",
-        Huisnummer = "8",
-        Postcode = "8888",
-        Gemeente = "Gemeente08"
+        Adres = new Adres                       //db structure changed
+        {
+            Straat = "Straat08",
+            Huisnummer = "8",
+            Postcode = "8888",
+            Gemeente = "Gemeente08"
+        }
     };
     var docent3 = new Docent
     {
