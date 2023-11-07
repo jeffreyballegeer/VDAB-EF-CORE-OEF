@@ -30,10 +30,11 @@ namespace Model.Entitites
         public DbSet<TPCZelfstudieCursus> TPCZelfstudieCursussen { get; set; }
         public DbSet<TPCKlassikaleCursus> TPCKlassikaleCursussen { get; set; }
 
-
         public DbSet<Boek> Boeken { get; set; }
         public DbSet<Cursus> Cursussen { get; set; }
 
+        public DbSet<Activiteit> Activiteiten { get; set; }
+        public DbSet<DocentActiviteit> DocentenActiviteiten { get; set; }
 
         // /* CONNECTIONSTRING HARDCODED : */
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -145,50 +146,64 @@ namespace Model.Entitites
             b => { b.HasIndex(e => e.IsbnNr).IsUnique(); }); // (2) 
             #endregion
 
+            #region DocentAktiviteit
+            //we define the relation between docent & aktiviteit using fluent-api:
+            modelBuilder.Entity<DocentActiviteit>()
+                        .HasKey(c => new { c.DocentId, c.ActiviteitId });
+            modelBuilder.Entity<DocentActiviteit>()
+                        .HasOne(x => x.Docent)
+                        .WithMany(y => y.DocentenActiviteiten)
+                        .HasForeignKey(x => x.DocentId);
+            modelBuilder.Entity<DocentActiviteit>()
+                        .HasOne(x => x.Activiteit)
+                        .WithMany(y => y.DocentenActiviteiten)
+                        .HasForeignKey(x => x.ActiviteitId);
+            #endregion
+
             #region Boek_HasData
-    modelBuilder.Entity<Boek>().HasData(
-    new Boek
-    {
-        BoekNr = 1,
-        IsbnNr = "0-0705918-0-6",
-        Titel = "C++ : For Scientists and Engineers"
-    },
-    new Boek
-    {
-        BoekNr = 2,
-        IsbnNr = "0-0788212-3-1",
-        Titel = "C++ : The Complete Reference"
-    },
-    new Boek
-    {
-        BoekNr = 3,
-        IsbnNr = "1-5659211-6-X",
-        Titel = "C++ : The Core Language"
-    },
-    new Boek
-    {
-        BoekNr = 4,
-        IsbnNr = "0-4448771-8-5",
-        Titel = "Relational Database Systems"
-    },
-    new Boek
-    {
-        BoekNr = 5,
-        IsbnNr = "1-5595851-1-0",
-        Titel = "Access from the Ground Up"
-    },
-    new Boek
-    {
-        BoekNr = 6,
-        IsbnNr = "0-0788212-2-3",
-        Titel = "Oracle : A Beginner''s Guide"
-    },
-    new Boek
-    {
-        BoekNr = 7,
-        IsbnNr = "0-0788209-7-9",
-        Titel = "Oracle : The Complete Reference"
-    });
+            modelBuilder.Entity<Boek>().HasData(
+            new Boek
+            {
+                BoekNr = 1,
+                IsbnNr = "0-0705918-0-6",
+                Titel = "C++ : For Scientists and Engineers"
+            },
+            new Boek
+            {
+                BoekNr = 2,
+                IsbnNr = "0-0788212-3-1",
+                Titel = "C++ : The Complete Reference"
+            },
+            new Boek
+            {
+                BoekNr = 3,
+                IsbnNr = "1-5659211-6-X",
+                Titel = "C++ : The Core Language"
+            },
+            new Boek
+            {
+                BoekNr = 4,
+                IsbnNr = "0-4448771-8-5",
+                Titel = "Relational Database Systems"
+            },
+            new Boek
+            {
+                BoekNr = 5,
+                IsbnNr = "1-5595851-1-0",
+                Titel = "Access from the Ground Up"
+            },
+            new Boek
+            {
+                BoekNr = 6,
+                IsbnNr = "0-0788212-2-3",
+                Titel = "Oracle : A Beginner''s Guide"
+            },
+            new Boek
+            {
+                BoekNr = 7,
+                IsbnNr = "0-0788209-7-9",
+                Titel = "Oracle : The Complete Reference"
+            });
             #endregion
 
             #region Cursus_HasData
@@ -196,7 +211,9 @@ namespace Model.Entitites
                 new Cursus { CursusNr = 1, Naam = "C++" },
                 new Cursus { CursusNr = 2, Naam = "Access" },
                 new Cursus { CursusNr = 3, Naam = "Oracle" });
+            #endregion
 
+            #region Boek_Cursus_HasData
             modelBuilder.Entity<Boek>()
                         .HasMany(p => p.Cursussen)
                         .WithMany(p => p.Boeken)

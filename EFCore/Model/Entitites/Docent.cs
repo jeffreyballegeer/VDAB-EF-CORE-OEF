@@ -13,7 +13,10 @@ namespace Model.Entitites
 {
     public partial class Docent
     {
-        public Docent() { }                          // empty ctor used in EFOpleidingenContext seeding
+        public Docent()                           // empty ctor used in EFOpleidingenContext seeding
+        {
+            DocentenActiviteiten = new List<DocentActiviteit>();
+        }
 
         public int DocentId { get; set; }
         [Required]
@@ -37,6 +40,8 @@ namespace Model.Entitites
         public Campus Campus { get; set; }           //nav prop 
         public Geslacht Geslacht { get; set; }
         public Land? Land { get; set; }              // nav prop 
+
+        public ICollection<DocentActiviteit> DocentenActiviteiten { get; set; } // nav prop
 
 
         #region methods

@@ -34,7 +34,9 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //AddExampleData_TPT();
 //AddExampleData_TPC();
 //GetAllCursussenWithBoeken();
-AddNewBoekAndAddItToACursusAndGetAllCursussenWithBoeken();
+//AddNewBoekAndAddItToACursusAndGetAllCursussenWithBoeken();
+AddNewDcentenAktiviteitenAndDocentAktiviteiten();
+
 
 #region Methods
 
@@ -483,7 +485,7 @@ void UpdateAssociationOfdEntity_FromOneSide()
         var campus3 = context.Campussen.Find(3);
         if (campus3 is not null)
         {
-            campus3.Docenten.Add(docent1); 
+            campus3.Docenten.Add(docent1);
             context.SaveChanges();
         }
         else
@@ -603,7 +605,7 @@ void AddNewBoekAndAddItToACursusAndGetAllCursussenWithBoeken()
     }; // (1) 
     context.Boeken.Add(nieuwBoek);
     context.Cursussen.Where(c => c.Naam == "C++").FirstOrDefault()
-                     .Boeken.Add(nieuwBoek); 
+                     .Boeken.Add(nieuwBoek);
     context.SaveChanges();
     var query = from cursus in context.Cursussen.Include("Boeken")
                 orderby cursus.Naam
@@ -614,6 +616,128 @@ void AddNewBoekAndAddItToACursusAndGetAllCursussenWithBoeken()
         foreach (var boek in cursus.Boeken)
             Console.WriteLine("\t{0} ({1})", boek.Titel, boek.IsbnNr);
     };
+}
+
+void AddNewDcentenAktiviteitenAndDocentAktiviteiten()
+{
+    //example code to add data to 2 tables in a many - many relation, with extra data in the intermediary table (tussentabel)
+
+    //create a new docent, campus & aktiviteiten
+    using var context = new EFOpleidingenContext();
+    var campus = new Campus
+    {
+        Naam = "CC Roeselare",
+        Adres = new Adres
+        {
+            Straat = "Pildersweg",
+            Huisnummer = "7",
+            Postcode = "8800",
+            Gemeente = "Roeselare"
+        }
+    };
+    var jean = new Docent
+    {
+        Voornaam = "Jean",
+        Familienaam = "Smits",
+        Wedde = 1000,
+        InDienst = new DateTime(1966, 8, 1),
+        HeeftRijbewijs = true,
+        ThuisAdres = new Adres
+        {
+            Straat = "Keizerslaan",
+            Huisnummer = "11",
+            Postcode = "1000",
+            Gemeente = "Brussel"
+        },
+        LandCode = "BE",
+        Campus = campus
+    };
+    var kiekeboe = new Docent
+    {
+        Voornaam = "Marcel",
+        Familienaam = "Kiekeboe",
+        Wedde = 500,
+        InDienst = new DateTime(1948, 10, 24),
+        HeeftRijbewijs = true,
+        ThuisAdres = new Adres
+        {
+            Straat = "Merholaan",
+            Huisnummer = "1B",
+            Postcode = "3000",
+            Gemeente = "Zoersel"
+        },
+        LandCode = "BE",
+        Campus = campus
+    };
+    var activiteit1 = new Activiteit { Naam = "EHBO" };
+    var activiteit2 = new Activiteit { Naam = "Vergaderen" };
+    var activiteit3 = new Activiteit { Naam = "Overleggen" };
+    var activiteit4 = new Activiteit { Naam = "Studie" };
+
+    //add and save the new data
+    context.Campussen.Add(campus);
+    context.SaveChanges();
+    context.Docenten.Add(jean);
+    context.Docenten.Add(kiekeboe);
+    context.SaveChanges();
+    context.Activiteiten.Add(activiteit1);
+    context.Activiteiten.Add(activiteit2);
+    context.Activiteiten.Add(activiteit3);
+    context.Activiteiten.Add(activiteit4);
+    context.SaveChanges();
+
+    //create, add and save new docentaktiviteiten by using their ids
+    var da1 = new DocentActiviteit
+    {
+        DocentId = jean.DocentId,
+        ActiviteitId = activiteit2.ActiviteitId,
+        AantalUren = 4
+    };
+    var da2 = new DocentActiviteit
+    {
+        DocentId = jean.DocentId,
+        ActiviteitId = activiteit3.ActiviteitId,
+        AantalUren = 1
+    };
+    var da3 = new DocentActiviteit
+    {
+        DocentId = kiekeboe.DocentId,
+        ActiviteitId = activiteit4.ActiviteitId,
+        AantalUren = 4
+    };
+    var da4 = new DocentActiviteit
+    {
+        DocentId = kiekeboe.DocentId,
+        ActiviteitId = activiteit1.ActiviteitId,
+        AantalUren = 1
+    };
+    var da5 = new DocentActiviteit
+    {
+        DocentId = kiekeboe.DocentId,
+        ActiviteitId = activiteit2.ActiviteitId,
+        AantalUren = 2
+    };
+    context.AddRange(da1, da2, da3, da4, da5);
+    context.SaveChanges();
+
+    //add a new docentaktiviteit by finding a docent and attaching him to the new docentaktiviteit
+    var docent = context.Docenten.Find(4);
+    docent.DocentenActiviteiten.Add(
+    new DocentActiviteit { ActiviteitId = 3, AantalUren = 6 }); // (4) 
+    context.SaveChanges();
+
+    //display the docentaktiviteiten by iterating over each docent, and if they have aktiviteiten, show them + hours
+    foreach (var d in context.Docenten.Include("DocentenActiviteiten.Activiteit"))// include aktiviteiten, we will need them
+    {
+        Console.WriteLine(d.Naam);
+        if (d.DocentenActiviteiten.Count == 0)
+            Console.WriteLine("\tGeen activiteiten");
+        else
+            foreach (var da in d.DocentenActiviteiten)
+                Console.WriteLine("\t{0} {1} uur", da.Activiteit.Naam, da.AantalUren);
+
+        Console.WriteLine();
+    }
 }
 
 #endregion
