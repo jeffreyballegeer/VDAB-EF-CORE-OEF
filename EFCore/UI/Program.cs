@@ -32,8 +32,9 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 //AddExampleData_TPH();
 //AddExampleData_TPT();
-AddExampleData_TPC();
-
+//AddExampleData_TPC();
+//GetAllCursussenWithBoeken();
+AddNewBoekAndAddItToACursusAndGetAllCursussenWithBoeken();
 
 #region Methods
 
@@ -575,4 +576,44 @@ void AddExampleData_TPC()
     });
     context.SaveChanges();
 }
+
+void GetAllCursussenWithBoeken()
+{
+    using var context = new EFOpleidingenContext();
+    var query = from cursus in context.Cursussen
+                .Include("Boeken")
+                orderby cursus.Naam
+                select cursus;
+    foreach (var cursus in query)
+    {
+        Console.WriteLine(cursus.Naam);
+        foreach (var boek in cursus.Boeken)
+            Console.WriteLine("\t{0} ({1})", boek.Titel, boek.IsbnNr);
+    }
+}
+
+void AddNewBoekAndAddItToACursusAndGetAllCursussenWithBoeken()
+{
+    //example code to add a new entry to a table in a many to many relation without intermediary table (tussentabel)
+    using var context = new EFOpleidingenContext();
+    var nieuwBoek = new Boek()
+    {
+        IsbnNr = "0-201-70431-5",
+        Titel = "Modern C++ Design"
+    }; // (1) 
+    context.Boeken.Add(nieuwBoek);
+    context.Cursussen.Where(c => c.Naam == "C++").FirstOrDefault()
+                     .Boeken.Add(nieuwBoek); 
+    context.SaveChanges();
+    var query = from cursus in context.Cursussen.Include("Boeken")
+                orderby cursus.Naam
+                select cursus;
+    foreach (var cursus in query)
+    {
+        Console.WriteLine(cursus.Naam);
+        foreach (var boek in cursus.Boeken)
+            Console.WriteLine("\t{0} ({1})", boek.Titel, boek.IsbnNr);
+    };
+}
+
 #endregion
