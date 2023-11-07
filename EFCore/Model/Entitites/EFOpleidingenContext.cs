@@ -36,6 +36,8 @@ namespace Model.Entitites
         public DbSet<Activiteit> Activiteiten { get; set; }
         public DbSet<DocentActiviteit> DocentenActiviteiten { get; set; }
 
+        public DbSet<Werknemer> Werknemers { get; set; }
+
         // /* CONNECTIONSTRING HARDCODED : */
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -229,6 +231,238 @@ namespace Model.Entitites
                         ));
             #endregion
 
+            #region Werknemer
+            modelBuilder.Entity<Werknemer>()
+                        .HasOne(x => x.Overste)
+                        .WithMany(y => y.Ondergeschikten)
+                        .OnDelete(DeleteBehavior.NoAction);
+            #endregion
+
+            #region Werknemer_HasData
+            //some employees
+            var werknemers = new List<Werknemer>()
+            {
+                new Werknemer { WerknemerId = 03, Voornaam = "Agustin", Familienaam = "Calleri" },
+                new Werknemer { WerknemerId = 04, Voornaam = "Ai", Familienaam = "Sugiyama" },
+                new Werknemer { WerknemerId = 05, Voornaam = "Akgul", Familienaam = "Amanmuradova" },
+                new Werknemer { WerknemerId = 06, Voornaam = "Albert", Familienaam = "Montanes" },
+                new Werknemer { WerknemerId = 07, Voornaam = "Alberto", Familienaam = "Martin" },
+                new Werknemer { WerknemerId = 08, Voornaam = "Aleksandra", Familienaam = "Wozniak" },
+                new Werknemer { WerknemerId = 09, Voornaam = "Alisa", Familienaam = "Kleybanova" },
+                new Werknemer { WerknemerId = 10, Voornaam = "Alize", Familienaam = "Cornet" },
+                new Werknemer { WerknemerId = 11, Voornaam = "Alla", Familienaam = "Kudryavtseva" },
+                new Werknemer { WerknemerId = 12, Voornaam = "Alona", Familienaam = "Bondarenko" },
+                new Werknemer { WerknemerId = 13, Voornaam = "Amelie", Familienaam = "Mauresmo" },
+                new Werknemer { WerknemerId = 14, Voornaam = "Ana", Familienaam = "Ivanovic" },
+                new Werknemer { WerknemerId = 15, Voornaam = "Anabel", Familienaam = "Medina Garrigues" },
+                new Werknemer { WerknemerId = 16, Voornaam = "Anastasia", Familienaam = "Pavlyuchenkova" },
+                new Werknemer { WerknemerId = 17, Voornaam = "Anastasiya", Familienaam = "Yakimova" },
+                new Werknemer { WerknemerId = 18, Voornaam = "Andreas", Familienaam = "Beck" },
+                new Werknemer { WerknemerId = 19, Voornaam = "Andreas", Familienaam = "Seppi" },
+                new Werknemer { WerknemerId = 20, Voornaam = "Andy", Familienaam = "Murray" },
+                new Werknemer { WerknemerId = 21, Voornaam = "Andy", Familienaam = "Roddick" },
+                new Werknemer { WerknemerId = 22, Voornaam = "Anna", Familienaam = "Chakvetadze" },
+                new Werknemer { WerknemerId = 23, Voornaam = "Anna-Lena", Familienaam = "Groenefeld" },
+                new Werknemer { WerknemerId = 24, Voornaam = "Anne", Familienaam = "Keothavong" },
+                new Werknemer { WerknemerId = 25, Voornaam = "Aravane", Familienaam = "Rezai" },
+                new Werknemer { WerknemerId = 26, Voornaam = "Arnaud", Familienaam = "Clement" },
+                new Werknemer { WerknemerId = 27, Voornaam = "Ayumi", Familienaam = "Morita" },
+                new Werknemer { WerknemerId = 28, Voornaam = "Barbora", Familienaam = "Zahlavova Strycova" },
+                new Werknemer { WerknemerId = 29, Voornaam = "Bethanie", Familienaam = "Mattek-Sands" },
+                new Werknemer { WerknemerId = 30, Voornaam = "Bjorn", Familienaam = "Phau" },
+                new Werknemer { WerknemerId = 31, Voornaam = "Bobby", Familienaam = "Reynolds" },
+                new Werknemer { WerknemerId = 32, Voornaam = "Brian", Familienaam = "Dabul" },
+                new Werknemer { WerknemerId = 33, Voornaam = "Camille", Familienaam = "Pin" },
+                new Werknemer { WerknemerId = 34, Voornaam = "Carla", Familienaam = "Suarez Navarro" },
+                new Werknemer { WerknemerId = 35, Voornaam = "Carlos", Familienaam = "Moya" },
+                new Werknemer { WerknemerId = 36, Voornaam = "Caroline", Familienaam = "Wozniacki" },
+                new Werknemer { WerknemerId = 37, Voornaam = "Casey", Familienaam = "Dellacqua" },
+                new Werknemer { WerknemerId = 38, Voornaam = "Christophe", Familienaam = "Rochus" },
+                new Werknemer { WerknemerId = 39, Voornaam = "Daniel", Familienaam = "Gimeno" },
+                new Werknemer { WerknemerId = 40, Voornaam = "Daniela", Familienaam = "Hantuchova" },
+                new Werknemer { WerknemerId = 41, Voornaam = "David", Familienaam = "Ferrer" },
+                new Werknemer { WerknemerId = 42, Voornaam = "David", Familienaam = "Nalbandian" },
+                new Werknemer { WerknemerId = 43, Voornaam = "Denis", Familienaam = "Gremelmayr" },
+                new Werknemer { WerknemerId = 44, Voornaam = "Diego", Familienaam = "Junqueira" },
+                new Werknemer { WerknemerId = 45, Voornaam = "Dinara", Familienaam = "Safina" },
+                new Werknemer { WerknemerId = 46, Voornaam = "Dmitry", Familienaam = "Tursunov" },
+                new Werknemer { WerknemerId = 47, Voornaam = "Dominika", Familienaam = "Cibulkova" },
+                new Werknemer { WerknemerId = 48, Voornaam = "Dudi", Familienaam = "Sela" },
+                new Werknemer { WerknemerId = 49, Voornaam = "Edina", Familienaam = "Gallovits" },
+                new Werknemer { WerknemerId = 50, Voornaam = "Eduardo", Familienaam = "Schwank" },
+                new Werknemer { WerknemerId = 51, Voornaam = "Ekaterina", Familienaam = "Makarova" },
+                new Werknemer { WerknemerId = 52, Voornaam = "Elena", Familienaam = "Dementieva" },
+                new Werknemer { WerknemerId = 53, Voornaam = "Elena", Familienaam = "Vesnina" },
+                new Werknemer { WerknemerId = 54, Voornaam = "Ernests", Familienaam = "Gulbis" },
+                new Werknemer { WerknemerId = 55, Voornaam = "Evgueni", Familienaam = "Korolev" },
+                new Werknemer { WerknemerId = 56, Voornaam = "Fabrice", Familienaam = "Santoro" },
+                new Werknemer { WerknemerId = 57, Voornaam = "Feliciano", Familienaam = "Lopez" },
+                new Werknemer { WerknemerId = 58, Voornaam = "Fernando", Familienaam = "Gonzalez" },
+                new Werknemer { WerknemerId = 59, Voornaam = "Fernando", Familienaam = "Verdasco" },
+                new Werknemer { WerknemerId = 60, Voornaam = "Flavia", Familienaam = "Pennetta" },
+                new Werknemer { WerknemerId = 61, Voornaam = "Florent", Familienaam = "Serra" },
+                new Werknemer { WerknemerId = 62, Voornaam = "Francesca", Familienaam = "Schiavone" },
+                new Werknemer { WerknemerId = 63, Voornaam = "Frederico", Familienaam = "Gil" },
+                new Werknemer { WerknemerId = 64, Voornaam = "Gael", Familienaam = "Monfils" },
+                new Werknemer { WerknemerId = 65, Voornaam = "Galina", Familienaam = "Voskoboeva" },
+                new Werknemer { WerknemerId = 66, Voornaam = "Gilles", Familienaam = "Muller" },
+                new Werknemer { WerknemerId = 67, Voornaam = "Gilles", Familienaam = "Simon" },
+                new Werknemer { WerknemerId = 68, Voornaam = "Gisela", Familienaam = "Dulko" },
+                new Werknemer { WerknemerId = 69, Voornaam = "Guillermo", Familienaam = "Canas" },
+                new Werknemer { WerknemerId = 70, Voornaam = "Guillermo", Familienaam = "Garcia-Lopez" },
+                new Werknemer { WerknemerId = 71, Voornaam = "Igor", Familienaam = "Andreev" },
+                new Werknemer { WerknemerId = 72, Voornaam = "Igor", Familienaam = "Kunitsyn" },
+                new Werknemer { WerknemerId = 73, Voornaam = "Ivan", Familienaam = "Ljubicic" },
+                new Werknemer { WerknemerId = 74, Voornaam = "Ivan", Familienaam = "Navarro-Pastor" },
+                new Werknemer { WerknemerId = 75, Voornaam = "Iveta", Familienaam = "Benesova" },
+                new Werknemer { WerknemerId = 76, Voornaam = "Ivo", Familienaam = "Karlovic" },
+                new Werknemer { WerknemerId = 77, Voornaam = "James", Familienaam = "Blake" },
+                new Werknemer { WerknemerId = 78, Voornaam = "Jan", Familienaam = "Hernych" },
+                new Werknemer { WerknemerId = 79, Voornaam = "Janko", Familienaam = "Tipsarevic" },
+                new Werknemer { WerknemerId = 80, Voornaam = "Jarkko", Familienaam = "Nieminen" },
+                new Werknemer { WerknemerId = 81, Voornaam = "Jarmila", Familienaam = "Groth" },
+                new Werknemer { WerknemerId = 82, Voornaam = "Jelena", Familienaam = "Dokic" },
+                new Werknemer { WerknemerId = 83, Voornaam = "Jelena", Familienaam = "Jankovic" },
+                new Werknemer { WerknemerId = 84, Voornaam = "Jeremy", Familienaam = "Chardy" },
+                new Werknemer { WerknemerId = 85, Voornaam = "Jie", Familienaam = "Zheng" },
+                new Werknemer { WerknemerId = 86, Voornaam = "Jose", Familienaam = "Acasuso" },
+                new Werknemer { WerknemerId = 87, Voornaam = "Jo-Wilfried", Familienaam = "Tsonga" },
+                new Werknemer { WerknemerId = 88, Voornaam = "Juan", Familienaam = "Carlos Ferrero" },
+                new Werknemer { WerknemerId = 89, Voornaam = "Juan", Familienaam = "Martin Del Potro" },
+                new Werknemer { WerknemerId = 90, Voornaam = "Juan", Familienaam = "Monaco" },
+                new Werknemer { WerknemerId = 91, Voornaam = "Julie", Familienaam = "Coin" },
+                new Werknemer { WerknemerId = 92, Voornaam = "Julien", Familienaam = "Benneteau" },
+                new Werknemer { WerknemerId = 93, Voornaam = "Jurgen", Familienaam = "Melzer" },
+                new Werknemer { WerknemerId = 94, Voornaam = "Kaia", Familienaam = "Kanepi" },
+                new Werknemer { WerknemerId = 95, Voornaam = "Katarina", Familienaam = "Srebotnik" },
+                new Werknemer { WerknemerId = 96, Voornaam = "Kateryna", Familienaam = "Bondarenko" },
+                new Werknemer { WerknemerId = 97, Voornaam = "Kei", Familienaam = "Nishikori" },
+                new Werknemer { WerknemerId = 98, Voornaam = "Kirsten", Familienaam = "Flipkens" },
+                new Werknemer { WerknemerId = 99, Voornaam = "Klara", Familienaam = "Zakopalova" },
+                new Werknemer { WerknemerId = 100, Voornaam = "Kristina", Familienaam = "Barrois" },
+                new Werknemer { WerknemerId = 101, Voornaam = "Kristof", Familienaam = "Vliegen" },
+                new Werknemer { WerknemerId = 102, Voornaam = "Leonardo", Familienaam = "Mayer" },
+                new Werknemer { WerknemerId = 103, Voornaam = "Lleyton", Familienaam = "Hewitt" },
+                new Werknemer { WerknemerId = 104, Voornaam = "Lourdes", Familienaam = "Dominguez Lino" },
+                new Werknemer { WerknemerId = 105, Voornaam = "Lucie", Familienaam = "Hradecka" },
+                new Werknemer { WerknemerId = 106, Voornaam = "Lucie", Familienaam = "Safarova" },
+                new Werknemer { WerknemerId = 107, Voornaam = "Magdalena", Familienaam = "Rybarikova" },
+                new Werknemer { WerknemerId = 108, Voornaam = "Marat", Familienaam = "Safin" },
+                new Werknemer { WerknemerId = 109, Voornaam = "Marc", Familienaam = "Gicquel" },
+                new Werknemer { WerknemerId = 110, Voornaam = "Marcel", Familienaam = "Granollers" },
+                new Werknemer { WerknemerId = 111, Voornaam = "Marcos", Familienaam = "Baghdatis" },
+                new Werknemer { WerknemerId = 112, Voornaam = "Mardy", Familienaam = "Fish" },
+                new Werknemer { WerknemerId = 113, Voornaam = "Maret", Familienaam = "Ani" },
+                new Werknemer { WerknemerId = 114, Voornaam = "Maria", Familienaam = "Jose Martinez Sanchez" },
+                new Werknemer { WerknemerId = 115, Voornaam = "Maria", Familienaam = "Kirilenko" },
+                new Werknemer { WerknemerId = 116, Voornaam = "Maria", Familienaam = "Sharapova" },
+                new Werknemer { WerknemerId = 117, Voornaam = "Marin", Familienaam = "Cilic" },
+                new Werknemer { WerknemerId = 118, Voornaam = "Marina", Familienaam = "Erakovic" },
+                new Werknemer { WerknemerId = 119, Voornaam = "Mario", Familienaam = "Ancic" },
+                new Werknemer { WerknemerId = 120, Voornaam = "Marion", Familienaam = "Bartoli" },
+                new Werknemer { WerknemerId = 121, Voornaam = "Mariya", Familienaam = "Koryttseva" },
+                new Werknemer { WerknemerId = 122, Voornaam = "Martin", Familienaam = "Vassallo-Arguello" },
+                new Werknemer { WerknemerId = 123, Voornaam = "Mathilde", Familienaam = "Johansson" },
+                new Werknemer { WerknemerId = 124, Voornaam = "Maximo", Familienaam = "Gonzalez" },
+                new Werknemer { WerknemerId = 125, Voornaam = "Melinda", Familienaam = "Czink" },
+                new Werknemer { WerknemerId = 126, Voornaam = "Michael", Familienaam = "Llodra" },
+                new Werknemer { WerknemerId = 127, Voornaam = "Michael", Familienaam = "Zverev" },
+                new Werknemer { WerknemerId = 128, Voornaam = "Mikhail", Familienaam = "Youzhny" },
+                new Werknemer { WerknemerId = 129, Voornaam = "Monica", Familienaam = "Niculescu" },
+                new Werknemer { WerknemerId = 130, Voornaam = "Na", Familienaam = "Li" },
+                new Werknemer { WerknemerId = 131, Voornaam = "Nadia", Familienaam = "Petrova" },
+                new Werknemer { WerknemerId = 132, Voornaam = "Nathalie", Familienaam = "Dechy" },
+                new Werknemer { WerknemerId = 133, Voornaam = "Nicolas", Familienaam = "Almagro" },
+                new Werknemer { WerknemerId = 134, Voornaam = "Nicolas", Familienaam = "Devilder" },
+                new Werknemer { WerknemerId = 135, Voornaam = "Nicolas", Familienaam = "Kiefer" },
+                new Werknemer { WerknemerId = 136, Voornaam = "Nicolas", Familienaam = "Massu" },
+                new Werknemer { WerknemerId = 137, Voornaam = "Nicole", Familienaam = "Vaidisova" },
+                new Werknemer { WerknemerId = 138, Voornaam = "Nikolay", Familienaam = "Davydenko" },
+                new Werknemer { WerknemerId = 139, Voornaam = "Novak", Familienaam = "Djokovic" },
+                new Werknemer { WerknemerId = 140, Voornaam = "Olga", Familienaam = "Govortsova" },
+                new Werknemer { WerknemerId = 141, Voornaam = "Oscar", Familienaam = "Hernandez" },
+                new Werknemer { WerknemerId = 142, Voornaam = "Pablo", Familienaam = "Andujar" },
+                new Werknemer { WerknemerId = 143, Voornaam = "Patricia", Familienaam = "Mayr" },
+                new Werknemer { WerknemerId = 144, Voornaam = "Patty", Familienaam = "Schnyder" },
+                new Werknemer { WerknemerId = 145, Voornaam = "Paul", Familienaam = "Capdeville" },
+                new Werknemer { WerknemerId = 146, Voornaam = "Paul-Henri", Familienaam = "Mathieu" },
+                new Werknemer { WerknemerId = 147, Voornaam = "Pauline", Familienaam = "Parmentier" },
+                new Werknemer { WerknemerId = 148, Voornaam = "Petra", Familienaam = "Cetkovska" },
+                new Werknemer { WerknemerId = 149, Voornaam = "Petra", Familienaam = "Kvitova" },
+                new Werknemer { WerknemerId = 150, Voornaam = "Philipp", Familienaam = "Kohlschreiber" },
+                new Werknemer { WerknemerId = 151, Voornaam = "Philipp", Familienaam = "Petzschner" },
+                new Werknemer { WerknemerId = 152, Voornaam = "Potito", Familienaam = "Starace" },
+                new Werknemer { WerknemerId = 153, Voornaam = "Radek", Familienaam = "Stepanek" },
+                new Werknemer { WerknemerId = 154, Voornaam = "Rafael", Familienaam = "Nadal" },
+                new Werknemer { WerknemerId = 155, Voornaam = "Rainer", Familienaam = "Schuettler" },
+                new Werknemer { WerknemerId = 156, Voornaam = "Richard", Familienaam = "Gasquet" },
+                new Werknemer { WerknemerId = 157, Voornaam = "Robby", Familienaam = "Ginepri" },
+                new Werknemer { WerknemerId = 158, Voornaam = "Robert", Familienaam = "Kendrick" },
+                new Werknemer { WerknemerId = 159, Voornaam = "Roberta", Familienaam = "Vinci" },
+                new Werknemer { WerknemerId = 160, Voornaam = "Robin", Familienaam = "Soderling" },
+                new Werknemer { WerknemerId = 161, Voornaam = "Roger", Familienaam = "Federer" },
+                new Werknemer { WerknemerId = 162, Voornaam = "Rossana", Familienaam = "De Los Rios" },
+                new Werknemer { WerknemerId = 163, Voornaam = "Sabine", Familienaam = "Lisicki" },
+                new Werknemer { WerknemerId = 164, Voornaam = "Samantha", Familienaam = "Stosur" },
+                new Werknemer { WerknemerId = 165, Voornaam = "Samuel", Familienaam = "Querrey" },
+                new Werknemer { WerknemerId = 166, Voornaam = "Sania", Familienaam = "Mirza" },
+                new Werknemer { WerknemerId = 167, Voornaam = "Sara", Familienaam = "Errani" },
+                new Werknemer { WerknemerId = 168, Voornaam = "Serena", Familienaam = "Williams" },
+                new Werknemer { WerknemerId = 169, Voornaam = "Severine", Familienaam = "Bremond" },
+                new Werknemer { WerknemerId = 170, Voornaam = "Shahar", Familienaam = "Peer" },
+                new Werknemer { WerknemerId = 171, Voornaam = "Shuai", Familienaam = "Peng" },
+                new Werknemer { WerknemerId = 172, Voornaam = "Simone", Familienaam = "Bolelli" },
+                new Werknemer { WerknemerId = 173, Voornaam = "Sofia", Familienaam = "Arvidsson" },
+                new Werknemer { WerknemerId = 174, Voornaam = "Sorana", Familienaam = "Cirstea" },
+                new Werknemer { WerknemerId = 175, Voornaam = "Stanislas", Familienaam = "Wawrinka" },
+                new Werknemer { WerknemerId = 176, Voornaam = "Stephanie", Familienaam = "Cohen-Aloro" },
+                new Werknemer { WerknemerId = 177, Voornaam = "Svetlana", Familienaam = "Kuznetsova" },
+                new Werknemer { WerknemerId = 178, Voornaam = "Sybille", Familienaam = "Bammer" },
+                new Werknemer { WerknemerId = 179, Voornaam = "Tamarine", Familienaam = "Tanasugarn" },
+                new Werknemer { WerknemerId = 180, Voornaam = "Tamira", Familienaam = "Paszek" },
+                new Werknemer { WerknemerId = 181, Voornaam = "Tathiana", Familienaam = "Garbin" },
+                new Werknemer { WerknemerId = 182, Voornaam = "Teimuraz", Familienaam = "Gabashvili" },
+                new Werknemer { WerknemerId = 183, Voornaam = "Thomaz", Familienaam = "Bellucci" },
+                new Werknemer { WerknemerId = 184, Voornaam = "Timea", Familienaam = "Bacsinszky" },
+                new Werknemer { WerknemerId = 185, Voornaam = "Tomas", Familienaam = "Berdych" },
+                new Werknemer { WerknemerId = 186, Voornaam = "Tommy", Familienaam = "Haas" },
+                new Werknemer { WerknemerId = 187, Voornaam = "Tommy", Familienaam = "Robredo" },
+                new Werknemer { WerknemerId = 188, Voornaam = "Tsvetana", Familienaam = "Pironkova" },
+                new Werknemer { WerknemerId = 189, Voornaam = "Vania", Familienaam = "King" },
+                new Werknemer { WerknemerId = 190, Voornaam = "Venus", Familienaam = "Williams" },
+                new Werknemer { WerknemerId = 191, Voornaam = "Vera", Familienaam = "Dushevina" },
+                new Werknemer { WerknemerId = 192, Voornaam = "Vera", Familienaam = "Zvonareva" },
+                new Werknemer { WerknemerId = 193, Voornaam = "Victor", Familienaam = "Hanescu" },
+                new Werknemer { WerknemerId = 194, Voornaam = "Victoria", Familienaam = "Azarenka" },
+                new Werknemer { WerknemerId = 195, Voornaam = "Viktor", Familienaam = "Troicki" },
+                new Werknemer { WerknemerId = 196, Voornaam = "Virginie", Familienaam = "Razzano" },
+                new Werknemer { WerknemerId = 197, Voornaam = "Wayne", Familienaam = "Odesnik" },
+                new Werknemer { WerknemerId = 198, Voornaam = "Yanina", Familienaam = "Wickmayer" },
+                new Werknemer { WerknemerId = 199, Voornaam = "Yen-Hsun", Familienaam = "Lu" },
+                new Werknemer { WerknemerId = 200, Voornaam = "Yung-Jan", Familienaam = "Chan" }
+            };
+
+            //pseudo random generate an 'overste' for two-thirds of the employees
+            foreach (var werknemer in werknemers)
+            {
+                if (werknemer.WerknemerId % 3 != 0)
+                {
+                    werknemer.OversteId = (1 + ((werknemer.Voornaam.Length * werknemer.Familienaam.Length) % werknemer.WerknemerId));
+                }
+            }
+
+            //fix those who became 'overste' of theirself by setting the value 'OversteId' to null
+            foreach (var werknemer in werknemers)
+            {
+                if (werknemer.OversteId == werknemer.WerknemerId)
+                {
+                    werknemer.OversteId = null;
+                }
+            }
+
+            //add it
+            modelBuilder.Entity<Werknemer>().HasData(werknemers);
+            #endregion
 
             #region Campussen_hasdata
             modelBuilder.Entity<Campus>().HasData(

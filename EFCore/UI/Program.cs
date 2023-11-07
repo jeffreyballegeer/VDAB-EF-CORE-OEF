@@ -36,8 +36,15 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //GetAllCursussenWithBoeken();
 //AddNewBoekAndAddItToACursusAndGetAllCursussenWithBoeken();
 
-AddNewDocentenAktiviteitenAndDocentAktiviteiten();
-GetAllDocentenAndAktiviteiten();
+//AddNewDocentenAktiviteitenAndDocentAktiviteiten();
+//GetAllDocentenAndAktiviteiten();
+
+AddNewWerknemers();
+GetWerknemers1_ToonWerknemersZonderOverste();
+GetWerknemers2_ToonWerknemersMetOverste_ToonOokOverste();
+GetWerknemers3_ToonOverstenMetHunOndergeschikten();
+UpdateWerknemers_MakeWerknemer5OversteVanWerknemer6();
+
 
 #region Methods
 
@@ -728,7 +735,7 @@ void AddNewDocentenAktiviteitenAndDocentAktiviteiten()
     context.SaveChanges();
 }
 
-void GetAllDocentenAndAktiviteiten() 
+void GetAllDocentenAndAktiviteiten()
 {
     //display the docentaktiviteiten by iterating over each docent, and if they have aktiviteiten, show them + hours
     using var context = new EFOpleidingenContext();
@@ -745,4 +752,68 @@ void GetAllDocentenAndAktiviteiten()
     }
 }
 
+void AddNewWerknemers()
+{
+    using var context = new EFOpleidingenContext();
+    Werknemer joe = new Werknemer { Voornaam = "Joe", Familienaam = "Dalton" };
+    Werknemer averell = new Werknemer { Voornaam = "Averell", Familienaam = "Dalton", Overste = joe };
+    context.Werknemers.Add(joe);
+    context.Werknemers.Add(averell);
+    context.SaveChanges();
+}
+void GetWerknemers1_ToonWerknemersZonderOverste()
+{
+    using var context = new EFOpleidingenContext();
+    var query = from werknemer in context.Werknemers
+                where werknemer.Overste == null
+                orderby werknemer.Voornaam, werknemer.Familienaam
+                select werknemer;
+    foreach (var werknemer in query)
+        Console.WriteLine($"{werknemer.Voornaam} {werknemer.Familienaam}");
+}
+void GetWerknemers2_ToonWerknemersMetOverste_ToonOokOverste()
+{
+    using var context = new EFOpleidingenContext();
+    var query = from werknemer in context.Werknemers.Include("Overste")
+                where werknemer.Overste != null
+                orderby werknemer.Voornaam, werknemer.Familienaam
+                select werknemer;
+    foreach (var werknemer in query)
+        Console.WriteLine(
+            $"Werknemer : {werknemer.Voornaam} {werknemer.Familienaam}" +
+            $", Overste : {werknemer.Overste.Voornaam} {werknemer.Overste.Familienaam} "
+        );
+}
+void GetWerknemers3_ToonOverstenMetHunOndergeschikten()
+{
+    using var context = new EFOpleidingenContext();
+    var query = from overste in context.Werknemers.Include("Ondergeschikten")
+                where overste.Ondergeschikten.Count != 0
+                orderby overste.Voornaam, overste.Familienaam
+                select overste;
+    foreach (var overste in query)
+    {
+        Console.WriteLine("Overste : " + overste.Voornaam + " " + overste.Familienaam);
+        foreach (var werknemer in overste.Ondergeschikten)
+            Console.WriteLine("\tWerknemer : " + werknemer.Voornaam + " " + werknemer.Familienaam);
+    }
+}
+void UpdateWerknemers_MakeWerknemer5OversteVanWerknemer6()
+{
+    using var context = new EFOpleidingenContext();
+    var werknemer5 = context.Werknemers.Find(5);
+    if (werknemer5 != null)
+    {
+        var werknemer6 = context.Werknemers.Find(6);
+        if (werknemer6 != null)
+        {
+            werknemer5.Ondergeschikten.Add(werknemer6);
+            context.SaveChanges();
+        }
+        else
+            Console.WriteLine("Werknemer 6 niet gevonden.");
+    }
+    else
+        Console.WriteLine("Werknemer 5 niet gevonden.");
+}
 #endregion
