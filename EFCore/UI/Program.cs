@@ -35,8 +35,9 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //AddExampleData_TPC();
 //GetAllCursussenWithBoeken();
 //AddNewBoekAndAddItToACursusAndGetAllCursussenWithBoeken();
-AddNewDcentenAktiviteitenAndDocentAktiviteiten();
 
+AddNewDocentenAktiviteitenAndDocentAktiviteiten();
+GetAllDocentenAndAktiviteiten();
 
 #region Methods
 
@@ -618,7 +619,7 @@ void AddNewBoekAndAddItToACursusAndGetAllCursussenWithBoeken()
     };
 }
 
-void AddNewDcentenAktiviteitenAndDocentAktiviteiten()
+void AddNewDocentenAktiviteitenAndDocentAktiviteiten()
 {
     //example code to add data to 2 tables in a many - many relation, with extra data in the intermediary table (tussentabel)
 
@@ -723,10 +724,14 @@ void AddNewDcentenAktiviteitenAndDocentAktiviteiten()
     //add a new docentaktiviteit by finding a docent and attaching him to the new docentaktiviteit
     var docent = context.Docenten.Find(4);
     docent.DocentenActiviteiten.Add(
-    new DocentActiviteit { ActiviteitId = 3, AantalUren = 6 }); // (4) 
+    new DocentActiviteit { ActiviteitId = 3, AantalUren = 6 });
     context.SaveChanges();
+}
 
+void GetAllDocentenAndAktiviteiten() 
+{
     //display the docentaktiviteiten by iterating over each docent, and if they have aktiviteiten, show them + hours
+    using var context = new EFOpleidingenContext();
     foreach (var d in context.Docenten.Include("DocentenActiviteiten.Activiteit"))// include aktiviteiten, we will need them
     {
         Console.WriteLine(d.Naam);
