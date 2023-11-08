@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Model.Entities;
 
@@ -11,9 +12,11 @@ using Model.Entities;
 namespace Model.Migrations
 {
     [DbContext(typeof(EFTakenContext))]
-    partial class EFTakenContextModelSnapshot : ModelSnapshot
+    [Migration("20231108120416_personeelslid")]
+    partial class personeelslid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,7 +91,7 @@ namespace Model.Migrations
 
                     b.HasIndex("ManagerNr");
 
-                    b.ToTable("Personeelsleden");
+                    b.ToTable("Personeelslid");
 
                     b.HasData(
                         new

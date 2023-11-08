@@ -107,62 +107,83 @@ using System.Net.Http.Headers;
 //    Console.WriteLine("U heeft niets ingevoerd");
 
 
-
+//-------------------
 //excercise 9.3 : Delete customer if it has no accountnumbers
 //--> My TRY : had no idea how to include the rekeningen of a customer so solved with extra db call. (see course example code below my code)
-int rekeningenVanklant(int klantId)
-{
-    using var context2 = new EFTakenContext();
-    return context2.Rekeningen
-        .Where(r => r.KlantNr == klantId)
-        .Count();
-}
+//int rekeningenVanklant(int klantId)
+//{
+//    using var context2 = new EFTakenContext();
+//    return context2.Rekeningen
+//        .Where(r => r.KlantNr == klantId)
+//        .Count();
+//}
 
-using var context = new EFTakenContext();
-Console.WriteLine("Beschikbare klanten : ");
-foreach (Klant klant in context.Klanten)
-    Console.WriteLine($"{klant.KlantNr} - {klant.Voornaam}");
+//using var context = new EFTakenContext();
+//Console.WriteLine("Beschikbare klanten : ");
+//foreach (Klant klant in context.Klanten)
+//    Console.WriteLine($"{klant.KlantNr} - {klant.Voornaam}");
 
-Console.WriteLine("Welk klantnr moet verwijderd worden?");
-if (int.TryParse(Console.ReadLine(), out int klantNr))
-{
-    var teVerwijderenKlant = context.Klanten.Find(klantNr);
-    if (teVerwijderenKlant != null)
-    {
-        if (rekeningenVanklant(klantNr) == 0)
-        {
-            context.Klanten.Remove(context.Klanten.Find(klantNr));
-            context.SaveChanges();
-            Console.WriteLine($"klantnr {klantNr} is verwijderd.");
-        }
-        else
-            Console.WriteLine($"klantnr {klantNr} heeft {rekeningenVanklant(klantNr)} rekening(en) en kan niet verwijderd worden.");
-    }
-    else
-        Console.WriteLine($"Klantnt {klantNr} bestaat niet");
-}
-else
-    Console.WriteLine("Dit is geen nummer");
+//Console.WriteLine("Welk klantnr moet verwijderd worden?");
+//if (int.TryParse(Console.ReadLine(), out int klantNr))
+//{
+//    var teVerwijderenKlant = context.Klanten.Find(klantNr);
+//    if (teVerwijderenKlant != null)
+//    {
+//        if (rekeningenVanklant(klantNr) == 0)
+//        {
+//            context.Klanten.Remove(context.Klanten.Find(klantNr));
+//            context.SaveChanges();
+//            Console.WriteLine($"klantnr {klantNr} is verwijderd.");
+//        }
+//        else
+//            Console.WriteLine($"klantnr {klantNr} heeft {rekeningenVanklant(klantNr)} rekening(en) en kan niet verwijderd worden.");
+//    }
+//    else
+//        Console.WriteLine($"Klantnt {klantNr} bestaat niet");
+//}
+//else
+//    Console.WriteLine("Dit is geen nummer");
 
 // COURSE EXAMPLE ->
-Console.Write("KlantNr:");
-if (int.TryParse(Console.ReadLine(), out var klantNummer))
+//Console.Write("KlantNr:");
+//if (int.TryParse(Console.ReadLine(), out var klantNummer))
+//{
+//    using var entities = new EFTakenContext();
+//    var klant = entities.Klanten.Include("Rekeningen")
+//    .FirstOrDefault(k => k.KlantNr == klantNummer);
+//    if (klant is null)
+//        Console.WriteLine("Klant niet gevonden");
+//    else
+//    {
+//        if (klant.Rekeningen.Count != 0)
+//            Console.WriteLine("Klant heeft nog rekeningen");
+//        else
+//        {
+//            entities.Klanten.Remove(klant);
+//            entities.SaveChanges();
+//        }
+//    }
+//}
+//else
+//    Console.WriteLine("Tik een getal");
+
+
+//-------------
+//Excercise 12.3 : Show all personeelsleden + ondergeschikten starting with highest in the hierachy
+//Couse example : 
+using var context = new EFTakenContext();
+var hoogstenInHierarchie =
+(from personeelslid in context.Personeelsleden
+ where personeelslid.Manager == null
+ select personeelslid).ToList();
+Afbeelden(hoogstenInHierarchie, 0);
+void Afbeelden(List<Personeelslid> personeel, int insprong)
 {
-    using var entities = new EFTakenContext();
-    var klant = entities.Klanten.Include("Rekeningen")
-    .FirstOrDefault(k => k.KlantNr == klantNummer);
-    if (klant is null)
-        Console.WriteLine("Klant niet gevonden");
-    else
+    foreach (var personeelslid in personeel)
     {
-        if (klant.Rekeningen.Count != 0)
-            Console.WriteLine("Klant heeft nog rekeningen");
-        else
-        {
-            entities.Klanten.Remove(klant);
-            entities.SaveChanges();
-        }
+        Console.Write(new String('\t', insprong));
+        Console.WriteLine(personeelslid.Voornaam);
+        if (personeelslid.Ondergeschikten.Count != 0)
+            Afbeelden(personeelslid.Ondergeschikten.ToList(), insprong + 1);
     }
 }
-else
-    Console.WriteLine("Tik een getal");
