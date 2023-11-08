@@ -20,7 +20,7 @@ namespace Model.Entities
         public decimal Saldo { get; set; }
         public char Soort { get; set; }
         [ForeignKey("KlantNr")]
-        public virtual Klant Klant { get; set; } // nav prop
+        public Klant Klant { get; set; } // nav prop
 
         public void Storten(decimal bedrag)
         {

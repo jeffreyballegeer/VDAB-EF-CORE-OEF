@@ -12,19 +12,33 @@ namespace Model.Entities
     {
         public DbSet<Klant> Klanten { get; set; }
         public DbSet<Rekening> Rekeningen { get; set; }
+
         public DbSet<Personeelslid> Personeelsleden { get; set; }
+
+        public DbSet<Artikelgroep> Artikelgroepen { get; set; }
+        public DbSet<Artikel> Artikels { get; set; }
+        public DbSet<NonFoodArtikel> NonFoodArtikels { get; set; }
+        public DbSet<FoodArtikel> FoodArtikels { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(
             "Server=.\\SQLExpress;Database=EFBank;" +
             "Trusted_Connection=true;encrypt=false",    //trusted connection = windowsuser als login
-            options => options.MaxBatchSize(150))      // # sql commands die in 1* naar de db gestuurd kunnen worden
-                .UseLazyLoadingProxies();
+            options => options.MaxBatchSize(150));      // # sql commands die in 1* naar de db gestuurd kunnen worden
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            #region Artikel_Discriminator
+            modelBuilder.Entity<Artikel>()
+                        .ToTable("Artikels")
+                        .HasDiscriminator<string>("ArtikelType")
+                        .HasValue<FoodArtikel>("F")
+                        .HasValue<NonFoodArtikel>("N");
+            #endregion
+
+            #region Personeelslid_hasdata
             modelBuilder.Entity<Personeelslid>().HasData
             (
                 new Personeelslid { PersoneelsNr = 01, Voornaam = "Diane" },
@@ -49,7 +63,9 @@ namespace Model.Entities
                 new Personeelslid { PersoneelsNr = 20, Voornaam = "Yoshimi", ManagerNr = 19 },
                 new Personeelslid { PersoneelsNr = 21, Voornaam = "Martin", ManagerNr = 5 }
             );
+            #endregion
 
+            #region Klant_hasdata
             modelBuilder.Entity<Klant>()
             .HasData(
                 new Klant
@@ -78,6 +94,9 @@ namespace Model.Entities
                     Voornaam = "Simpson"
                 }
             );
+            #endregion
+
+            #region Rekening_hasdata
             modelBuilder.Entity<Rekening>()
             .HasData(
                 new Rekening
@@ -102,6 +121,7 @@ namespace Model.Entities
                     Soort = 'S'
                 }
             );
+            #endregion
         }
     }
 }

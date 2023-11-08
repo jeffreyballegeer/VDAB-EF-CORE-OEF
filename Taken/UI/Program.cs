@@ -171,19 +171,49 @@ using System.Net.Http.Headers;
 //-------------
 //Excercise 12.3 : Show all personeelsleden + ondergeschikten starting with highest in the hierachy
 //Couse example : 
+//using var context = new EFTakenContext();
+//var hoogstenInHierarchie =
+//(from personeelslid in context.Personeelsleden
+// where personeelslid.Manager == null
+// select personeelslid).ToList();
+//Afbeelden(hoogstenInHierarchie, 0);
+//void Afbeelden(List<Personeelslid> personeel, int insprong)
+//{
+//    foreach (var personeelslid in personeel)
+//    {
+//        Console.Write(new String('\t', insprong));
+//        Console.WriteLine(personeelslid.Voornaam);
+//        if (personeelslid.Ondergeschikten.Count != 0)
+//            Afbeelden(personeelslid.Ondergeschikten.ToList(), insprong + 1);
+//    }
+//}
+
+
+//-----------------
+//Excercise 12.4 : Build classes & database according to entity layout, add some data to database
+//Course example:
 using var context = new EFTakenContext();
-var hoogstenInHierarchie =
-(from personeelslid in context.Personeelsleden
- where personeelslid.Manager == null
- select personeelslid).ToList();
-Afbeelden(hoogstenInHierarchie, 0);
-void Afbeelden(List<Personeelslid> personeel, int insprong)
+var soepterrine = new NonFoodArtikel()
 {
-    foreach (var personeelslid in personeel)
-    {
-        Console.Write(new String('\t', insprong));
-        Console.WriteLine(personeelslid.Voornaam);
-        if (personeelslid.Ondergeschikten.Count != 0)
-            Afbeelden(personeelslid.Ondergeschikten.ToList(), insprong + 1);
-    }
-}
+    Naam = "Villeroy & Boch",
+    Garantie = 24
+};
+var grasmachine = new NonFoodArtikel()
+{
+    Naam = "SABO 40-spirit",
+    Garantie = 60
+};
+var frietpatatjes = new FoodArtikel()
+{
+    Naam = "Frietaardappelen 5kg",
+    Houdbaarheid = 1
+};
+
+var tuin = new Artikelgroep { Naam = "Tuinartikelen" };
+var keuken = new Artikelgroep { Naam = "Keukenartikelen" };
+tuin.Artikels.Add(grasmachine);
+keuken.Artikels.Add(soepterrine);
+keuken.Artikels.Add(frietpatatjes);
+context.Artikelgroepen.Add(tuin);
+context.Artikelgroepen.Add(keuken);
+context.SaveChanges();
