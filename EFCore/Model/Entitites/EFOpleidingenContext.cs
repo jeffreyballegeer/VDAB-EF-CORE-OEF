@@ -496,10 +496,6 @@ namespace Model.Entitites
                 #endregion
 
                 #region Docent_hasdata
-                //modelBuilder.Entity<Docent>()
-                //    .HasOne(d => d.Land)
-                //    .WithMany(l => l.Docenten)
-                //    .OnDelete(DeleteBehavior.SetNull);
                 modelBuilder.Entity<Docent>()
                     .HasData(
                     new Docent
