@@ -40,15 +40,21 @@ namespace Model.Entitites
         public DbSet<DocentActiviteit> DocentenActiviteiten { get; set; }
 
         public DbSet<Werknemer> Werknemers { get; set; }
+
+        public DbSet<Voorraad> CursusVoorraden { get; set; }
         #endregion
 
+
         #region ctor
+        //p113 in cursus: testproject "Tests" is unloaded from solution wegens ctor fouten (zie voorbeeld bij onderdeel transactionbeheer)
+        //indien terug testen doen : deze ctor uncommenten, project "Tests" terug laden (reload project)
         //deze ctor is nodig voor configuratie van inmemory database bij unit testing
-        public EFOpleidingenContext(DbContextOptions<EFOpleidingenContext> options) : base(options) { }
-        /// <summary>
+        //public EFOpleidingenContext(DbContextOptions<EFOpleidingenContext> options) : base(options) { }
+
         //default ctor wordt door bovenstaande ctor niet meer automatisch aangemaakt, dus toevoegen
         public EFOpleidingenContext() { }
         #endregion
+
 
         // /* CONNECTIONSTRING HARDCODED : */
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -186,6 +192,15 @@ namespace Model.Entitites
                         .OnDelete(DeleteBehavior.NoAction);
             #endregion
 
+            #region Voorrraad
+            modelBuilder.Entity<Voorraad>().HasKey(table => new
+            {
+                table.MagazijnNr,
+                table.CursusNr
+            });
+            #endregion
+
+            #region Seeding
             if (!testMode)
             {
 
@@ -4509,7 +4524,20 @@ namespace Model.Entitites
 
             );
                 #endregion
+
+                #region Voorraad_hasdata
+                modelBuilder.Entity<Voorraad>().HasData
+                (
+                    new Voorraad { MagazijnNr = 1, CursusNr = 10, AantalStuks = 100, RekNr = 3 },
+                    new Voorraad { MagazijnNr = 2, CursusNr = 10, AantalStuks = 1000, RekNr = 17 },
+                    new Voorraad { MagazijnNr = 1, CursusNr = 20, AantalStuks = 200, RekNr = 12 },
+                    new Voorraad { MagazijnNr = 2, CursusNr = 20, AantalStuks = 2000, RekNr = 23 },
+                    new Voorraad { MagazijnNr = 1, CursusNr = 30, AantalStuks = 300, RekNr = 4 },
+                    new Voorraad { MagazijnNr = 2, CursusNr = 30, AantalStuks = 3000, RekNr = 9 }
+                );
+               #endregion
             }
+            #endregion
         }
     }
 }
