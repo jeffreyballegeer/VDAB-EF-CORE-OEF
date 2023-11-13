@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Model.Entitites;
+using Model.Migrations;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
@@ -39,12 +40,13 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //AddNewDocentenAktiviteitenAndDocentAktiviteiten();
 //GetAllDocentenAndAktiviteiten();
 
-AddNewWerknemers();
-GetWerknemers1_ToonWerknemersZonderOverste();
-GetWerknemers2_ToonWerknemersMetOverste_ToonOokOverste();
-GetWerknemers3_ToonOverstenMetHunOndergeschikten();
-UpdateWerknemers_MakeWerknemer5OversteVanWerknemer6();
+//AddNewWerknemers();
+//GetWerknemers1_ToonWerknemersZonderOverste();
+//GetWerknemers2_ToonWerknemersMetOverste_ToonOokOverste();
+//GetWerknemers3_ToonOverstenMetHunOndergeschikten();
+//UpdateWerknemers_MakeWerknemer5OversteVanWerknemer6();
 
+DoeVoorraadTransfer();
 
 #region Methods
 
@@ -815,5 +817,70 @@ void UpdateWerknemers_MakeWerknemer5OversteVanWerknemer6()
     }
     else
         Console.WriteLine("Werknemer 5 niet gevonden.");
+}
+
+void VoorraadTransfer(int cursusNr, int vanMagazijnNr, int naarMagazijnNr, int aantalStuks)
+{
+    using var context = new EFOpleidingenContext();
+    var vanVoorraad = context.CursusVoorraden.Find(vanMagazijnNr, cursusNr);
+    if (vanVoorraad != null)
+    {
+        if (vanVoorraad.AantalStuks >= aantalStuks)
+        {
+            vanVoorraad.AantalStuks -= aantalStuks;
+            var naarVoorraad =
+            context.CursusVoorraden.Find(naarMagazijnNr, cursusNr);
+            if (naarVoorraad != null)
+            {
+                naarVoorraad.AantalStuks += aantalStuks;
+                Console.ReadLine(); //gives time for user to change the data in table manualy using ssms. After ending the program check in ssms to see the manual adjustment is gone.
+                context.SaveChanges();
+            }
+            else
+                Console.WriteLine("Cursus {0} niet gevonden in magazijn {1}", cursusNr, naarMagazijnNr);
+        }
+        else
+            Console.WriteLine("Te weinig voorraad voor transfer");
+    }
+    else
+        Console.WriteLine("Artikel niet gevonden in magazijn {0}", vanMagazijnNr);
+}
+void DoeVoorraadTransfer()
+{
+    //show current stock
+    using var context = new EFOpleidingenContext();
+    var query = from cursusvoorraad in context.CursusVoorraden
+                orderby cursusvoorraad.CursusNr, cursusvoorraad.MagazijnNr
+                select cursusvoorraad;
+    Console.WriteLine("De huidige cursusvoorraden : ");
+    foreach (var item in query)
+        Console.WriteLine($"Cursusnr  {item.CursusNr} {"\t"}- Stock {item.AantalStuks} {"\t"}- Magazijn nr {item.MagazijnNr}");
+    try
+    {
+        //update stock
+        Console.Write("Cursusnr.:");
+        var cursusNr = int.Parse(Console.ReadLine());
+        Console.Write("Van magazijn nr.:");
+        var vanMagazijnNr = int.Parse(Console.ReadLine());
+        Console.Write("Naar magazijn nr:");
+        var naarMagazijnNr = int.Parse(Console.ReadLine());
+        Console.Write("Aantal stuks:");
+        var aantalStuks = int.Parse(Console.ReadLine());
+        VoorraadTransfer(cursusNr, vanMagazijnNr,
+        naarMagazijnNr, aantalStuks);
+
+        //show new stock
+        Console.WriteLine("De nieuwe cursusvoorraden : ");
+        query = from cursusvoorraad in context.CursusVoorraden
+                orderby cursusvoorraad.CursusNr, cursusvoorraad.MagazijnNr
+                select cursusvoorraad;
+        foreach (var item in query)
+            Console.WriteLine($"Cursusnr  {item.CursusNr} {"\t"}- Stock {item.AantalStuks} {"\t"}- Magazijn nr {item.MagazijnNr}");
+
+    }
+    catch (FormatException)
+    {
+        Console.WriteLine("Tik een getal");
+    }
 }
 #endregion
