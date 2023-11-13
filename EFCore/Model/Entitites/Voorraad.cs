@@ -9,15 +9,13 @@ namespace Model.Entitites
 {
     public class Voorraad
     {
-        [ConcurrencyCheck] //of modelBuilder.Entity<Voorraad>().Property(a => a.MagazijnNr).IsConcurrencyToken(); 
         public int MagazijnNr { get; set; }
-        [ConcurrencyCheck]
         public int CursusNr { get; set; }
         [Required]
-        [ConcurrencyCheck]
         public int AantalStuks { get; set; }
         [Required]
-        [ConcurrencyCheck]
         public int RekNr { get; set; }
+        [Timestamp] // of modelBuilder.Entity<Voorraad>().Property(a => a.Aangepast).IsRowVersion(); 
+        public byte[]? Aangepast { get; set; }
     }
 }
