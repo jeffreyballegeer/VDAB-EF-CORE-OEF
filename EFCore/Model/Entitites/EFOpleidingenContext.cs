@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -52,9 +53,24 @@ namespace Model.Entitites
         //public EFOpleidingenContext(DbContextOptions<EFOpleidingenContext> options) : base(options) { }
 
         //default ctor wordt door bovenstaande ctor niet meer automatisch aangemaakt, dus toevoegen
-        public EFOpleidingenContext() { }
+        public EFOpleidingenContext() 
+        {
+            //koppel events
+            ChangeTracker.StateChanged += StateChanged;
+            ChangeTracker.Tracked += Tracked;
+        }
         #endregion
 
+        #region Events
+        private void StateChanged(object sender, EntityStateChangedEventArgs e)
+        {
+            Console.WriteLine($"*** Status is gewijzigd van {e.OldState} naar {e.NewState} ***");
+        }
+        private void Tracked(object sender, EntityTrackedEventArgs e)
+        {
+            Console.WriteLine("*** Nieuw te volgen entity ***");
+        }
+        #endregion
 
         // /* CONNECTIONSTRING HARDCODED : */
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
