@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Model.Entitites;
 using Model.Migrations;
+using System.Transactions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
@@ -821,6 +822,8 @@ void UpdateWerknemers_MakeWerknemer5OversteVanWerknemer6()
 
 void VoorraadTransfer(int cursusNr, int vanMagazijnNr, int naarMagazijnNr, int aantalStuks)
 {
+    var transactionOptions = new TransactionOptions { IsolationLevel = IsolationLevel.RepeatableRead };
+    using var transactionScope = new TransactionScope(TransactionScopeOption.Required, transactionOptions);
     using var context = new EFOpleidingenContext();
     var vanVoorraad = context.CursusVoorraden.Find(vanMagazijnNr, cursusNr);
     if (vanVoorraad != null)
@@ -835,6 +838,7 @@ void VoorraadTransfer(int cursusNr, int vanMagazijnNr, int naarMagazijnNr, int a
                 naarVoorraad.AantalStuks += aantalStuks;
                 Console.ReadLine(); //gives time for user to change the data in table manualy using ssms. After ending the program check in ssms to see the manual adjustment is gone.
                 context.SaveChanges();
+                transactionScope.Complete();
             }
             else
                 Console.WriteLine("Cursus {0} niet gevonden in magazijn {1}", cursusNr, naarMagazijnNr);
