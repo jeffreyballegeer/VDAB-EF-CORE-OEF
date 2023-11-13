@@ -5,6 +5,7 @@ using Model.Entities;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Net.Http.Headers;
+using System.Transactions;
 
 //var context = new EFTakenContext();
 
@@ -192,28 +193,73 @@ using System.Net.Http.Headers;
 //-----------------
 //Excercise 12.4 : Build classes & database according to entity layout, add some data to database
 //Course example:
-using var context = new EFTakenContext();
-var soepterrine = new NonFoodArtikel()
-{
-    Naam = "Villeroy & Boch",
-    Garantie = 24
-};
-var grasmachine = new NonFoodArtikel()
-{
-    Naam = "SABO 40-spirit",
-    Garantie = 60
-};
-var frietpatatjes = new FoodArtikel()
-{
-    Naam = "Frietaardappelen 5kg",
-    Houdbaarheid = 1
-};
+//using var context = new EFTakenContext();
+//var soepterrine = new NonFoodArtikel()
+//{
+//    Naam = "Villeroy & Boch",
+//    Garantie = 24
+//};
+//var grasmachine = new NonFoodArtikel()
+//{
+//    Naam = "SABO 40-spirit",
+//    Garantie = 60
+//};
+//var frietpatatjes = new FoodArtikel()
+//{
+//    Naam = "Frietaardappelen 5kg",
+//    Houdbaarheid = 1
+//};
 
-var tuin = new Artikelgroep { Naam = "Tuinartikelen" };
-var keuken = new Artikelgroep { Naam = "Keukenartikelen" };
-tuin.Artikels.Add(grasmachine);
-keuken.Artikels.Add(soepterrine);
-keuken.Artikels.Add(frietpatatjes);
-context.Artikelgroepen.Add(tuin);
-context.Artikelgroepen.Add(keuken);
-context.SaveChanges();
+//var tuin = new Artikelgroep { Naam = "Tuinartikelen" };
+//var keuken = new Artikelgroep { Naam = "Keukenartikelen" };
+//tuin.Artikels.Add(grasmachine);
+//keuken.Artikels.Add(soepterrine);
+//keuken.Artikels.Add(frietpatatjes);
+//context.Artikelgroepen.Add(tuin);
+//context.Artikelgroepen.Add(keuken);
+//context.SaveChanges();
+
+//------------
+//Excercise 
+Console.Write("RekeningNr. van rekening:");
+var vanRekeningNr = Console.ReadLine();
+Console.Write("RekeningNr. naar rekening:");
+var naarRekeningNr = Console.ReadLine();
+try
+{
+    Console.Write("Bedrag:");
+    var bedrag = decimal.Parse(Console.ReadLine());
+    if (bedrag <= decimal.Zero)
+        Console.WriteLine("Tik een positief bedrag");
+    else
+    {
+        var transactionOptions = new TransactionOptions
+        {
+            IsolationLevel = IsolationLevel.RepeatableRead
+        };
+        using var transactionScope = new TransactionScope(
+        TransactionScopeOption.Required, transactionOptions);
+        using var entities = new EFTakenContext();
+        var vanRekening = entities.Rekeningen.Find(vanRekeningNr);
+        if (vanRekening == null)
+            Console.WriteLine("Van rekening niet gevonden");
+        else
+        {
+            var naarRekening = entities.Rekeningen.Find(naarRekeningNr);
+            if (naarRekening == null)
+                Console.WriteLine("Naar rekening niet gevonden");
+            else
+                try
+                {
+                    vanRekening.Overschrijven(naarRekening, bedrag);
+                    entities.SaveChanges();
+                    transactionScope.Complete();
+                }
+                catch (Exception e) { Console.WriteLine(e.Message); }
+        }
+    }
+}
+catch (FormatException)
+{
+    Console.WriteLine("Tik een bedrag");
+}

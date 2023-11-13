@@ -26,5 +26,15 @@ namespace Model.Entities
         {
             Saldo += bedrag;
         }
+        public void Overschrijven(Rekening naarRekening, decimal bedrag)
+        {
+            if (this.Saldo < bedrag)
+                throw new Exception("Saldo ontoereikend");
+            else
+            {
+                this.Saldo -= bedrag;
+                naarRekening.Saldo += bedrag;
+            }
+        }
     }
 }
