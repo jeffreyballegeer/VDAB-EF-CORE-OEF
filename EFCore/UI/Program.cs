@@ -50,7 +50,9 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 //DoeVoorraadTransfer();
 //DoeVoorraadBijvulling();
-ShowChangeTrackerStatusses();
+//ShowChangeTrackerStatusses();
+ExampleOfUntrackedTrackedContext();
+
 
 #region Methods
 
@@ -986,5 +988,18 @@ void ShowChangeTrackerStatusses()
         }
         Console.WriteLine("\n");
     }
+    var test = context.ChangeTracker.DebugView;
+    Console.ReadLine();
+}
+void ExampleOfUntrackedTrackedContext()
+{
+    using var context = new EFOpleidingenContext();
+    context.ChangeTracker.QueryTrackingBehavior =
+    QueryTrackingBehavior.NoTracking;
+    var landenlijst = context.Landen.ToList();
+    var debugview = context.ChangeTracker.DebugView;
+    var nieuwland = new Land { LandCode = "AUS", Naam = "Australië" };
+    context.Landen.Add(nieuwland); //will start tracking again
+    Console.ReadLine();
 }
 #endregion
