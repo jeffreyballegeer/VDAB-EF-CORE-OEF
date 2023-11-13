@@ -38,6 +38,11 @@ namespace Model.Entities
                         .HasValue<NonFoodArtikel>("N");
             #endregion
 
+            #region Klant_optimistic_record_locking
+            modelBuilder.Entity<Klant>().Property(a => a.KlantNr).IsConcurrencyToken();
+            modelBuilder.Entity<Klant>().Property(a => a.Voornaam).IsConcurrencyToken();
+            #endregion
+
             #region Personeelslid_hasdata
             modelBuilder.Entity<Personeelslid>().HasData
             (

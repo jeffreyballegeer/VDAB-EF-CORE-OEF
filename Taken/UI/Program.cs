@@ -220,46 +220,72 @@ using System.Transactions;
 //context.SaveChanges();
 
 //------------
-//Excercise 
-Console.Write("RekeningNr. van rekening:");
-var vanRekeningNr = Console.ReadLine();
-Console.Write("RekeningNr. naar rekening:");
-var naarRekeningNr = Console.ReadLine();
+//Excercise 14.6 :  Wire money between two accounts, excercise on transactionmanagement
+//Console.Write("RekeningNr. van rekening:");
+//var vanRekeningNr = Console.ReadLine();
+//Console.Write("RekeningNr. naar rekening:");
+//var naarRekeningNr = Console.ReadLine();
+//try
+//{
+//    Console.Write("Bedrag:");
+//    var bedrag = decimal.Parse(Console.ReadLine());
+//    if (bedrag <= decimal.Zero)
+//        Console.WriteLine("Tik een positief bedrag");
+//    else
+//    {
+//        var transactionOptions = new TransactionOptions
+//        {
+//            IsolationLevel = IsolationLevel.RepeatableRead
+//        };
+//        using var transactionScope = new TransactionScope(
+//        TransactionScopeOption.Required, transactionOptions);
+//        using var entities = new EFTakenContext();
+//        var vanRekening = entities.Rekeningen.Find(vanRekeningNr);
+//        if (vanRekening == null)
+//            Console.WriteLine("Van rekening niet gevonden");
+//        else
+//        {
+//            var naarRekening = entities.Rekeningen.Find(naarRekeningNr);
+//            if (naarRekening == null)
+//                Console.WriteLine("Naar rekening niet gevonden");
+//            else
+//                try
+//                {
+//                    vanRekening.Overschrijven(naarRekening, bedrag);
+//                    entities.SaveChanges();
+//                    transactionScope.Complete();
+//                }
+//                catch (Exception e) { Console.WriteLine(e.Message); }
+//        }
+//    }
+//}
+//catch (FormatException)
+//{
+//    Console.WriteLine("Tik een bedrag");
+//}
+
+//------------
+//Excercise 15.4 : adjust surname. Excercise on Optimistic record locking, solved here without timestamp
+Console.Write("KlantNr:");
 try
 {
-    Console.Write("Bedrag:");
-    var bedrag = decimal.Parse(Console.ReadLine());
-    if (bedrag <= decimal.Zero)
-        Console.WriteLine("Tik een positief bedrag");
+    var klantNr = int.Parse(Console.ReadLine());
+    using var entities = new EFTakenContext();
+    var klant = entities.Klanten.Find(klantNr);
+    if (klant == null)
+        Console.WriteLine("Klant niet gevonden");
     else
     {
-        var transactionOptions = new TransactionOptions
-        {
-            IsolationLevel = IsolationLevel.RepeatableRead
-        };
-        using var transactionScope = new TransactionScope(
-        TransactionScopeOption.Required, transactionOptions);
-        using var entities = new EFTakenContext();
-        var vanRekening = entities.Rekeningen.Find(vanRekeningNr);
-        if (vanRekening == null)
-            Console.WriteLine("Van rekening niet gevonden");
-        else
-        {
-            var naarRekening = entities.Rekeningen.Find(naarRekeningNr);
-            if (naarRekening == null)
-                Console.WriteLine("Naar rekening niet gevonden");
-            else
-                try
-                {
-                    vanRekening.Overschrijven(naarRekening, bedrag);
-                    entities.SaveChanges();
-                    transactionScope.Complete();
-                }
-                catch (Exception e) { Console.WriteLine(e.Message); }
-        }
+        Console.Write("Voornaam:");
+        klant.Voornaam = Console.ReadLine();
+        entities.SaveChanges();
     }
+}
+catch (DbUpdateConcurrencyException)
+{
+    Console.WriteLine("Een andere gebruiker wijzigde deze klant");
 }
 catch (FormatException)
 {
-    Console.WriteLine("Tik een bedrag");
+    Console.WriteLine("Tik een getal");
 }
