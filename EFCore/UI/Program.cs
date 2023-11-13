@@ -47,7 +47,8 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //GetWerknemers3_ToonOverstenMetHunOndergeschikten();
 //UpdateWerknemers_MakeWerknemer5OversteVanWerknemer6();
 
-DoeVoorraadTransfer();
+//DoeVoorraadTransfer();
+DoeVoorraadBijvulling();
 
 #region Methods
 
@@ -853,12 +854,8 @@ void DoeVoorraadTransfer()
 {
     //show current stock
     using var context = new EFOpleidingenContext();
-    var query = from cursusvoorraad in context.CursusVoorraden
-                orderby cursusvoorraad.CursusNr, cursusvoorraad.MagazijnNr
-                select cursusvoorraad;
     Console.WriteLine("De huidige cursusvoorraden : ");
-    foreach (var item in query)
-        Console.WriteLine($"Cursusnr  {item.CursusNr} {"\t"}- Stock {item.AantalStuks} {"\t"}- Magazijn nr {item.MagazijnNr}");
+    ToonVoorraad();
     try
     {
         //update stock
@@ -875,16 +872,65 @@ void DoeVoorraadTransfer()
 
         //show new stock
         Console.WriteLine("De nieuwe cursusvoorraden : ");
-        query = from cursusvoorraad in context.CursusVoorraden
-                orderby cursusvoorraad.CursusNr, cursusvoorraad.MagazijnNr
-                select cursusvoorraad;
-        foreach (var item in query)
-            Console.WriteLine($"Cursusnr  {item.CursusNr} {"\t"}- Stock {item.AantalStuks} {"\t"}- Magazijn nr {item.MagazijnNr}");
-
+        ToonVoorraad();
     }
     catch (FormatException)
     {
         Console.WriteLine("Tik een getal");
     }
+}
+
+void ToonVoorraad()
+{
+    var context = new EFOpleidingenContext();
+    var query = from cursusvoorraad in context.CursusVoorraden
+                orderby cursusvoorraad.CursusNr, cursusvoorraad.MagazijnNr
+                select cursusvoorraad;
+    foreach (var item in query)
+        Console.WriteLine($"Cursusnr  {item.CursusNr} {"\t"}- Stock {item.AantalStuks} {"\t"}- Magazijn nr {item.MagazijnNr}");
+}
+
+void DoeVoorraadBijvulling() 
+{
+    Console.WriteLine("De huidige cursusvoorraden : ");
+    ToonVoorraad();
+    try
+    {
+        Console.Write("Cursusnr.:");
+        var cursusNr = int.Parse(Console.ReadLine());
+        Console.Write("Magazijn nr.:");
+        var magazijnNr = int.Parse(Console.ReadLine());
+        Console.Write("Aantal stuks toevoegen:");
+        var aantalStuks = int.Parse(Console.ReadLine());
+        VoorraadBijvulling(cursusNr, magazijnNr, aantalStuks);
+        Console.WriteLine("De nieuwe cursusvoorraden : ");
+        ToonVoorraad();
+    }
+    catch (FormatException)
+    {
+        Console.WriteLine("Tik een getal");
+
+    }
+}
+void VoorraadBijvulling(int cursusNr, int magazijnNr, int aantalStuks)
+{
+    using var context = new EFOpleidingenContext();
+    var voorraad = context.CursusVoorraden.Find(magazijnNr, cursusNr);
+    if (voorraad != null)
+    {
+        voorraad.AantalStuks += aantalStuks;
+        Console.WriteLine("Pas nu de voorraad aan in SSMS, druk daarna op Enter");
+        Console.ReadLine();
+        try
+        {
+            context.SaveChanges();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            Console.WriteLine("Voorraad werd intussen door een andere applicatie aangepast");
+        }
+    }
+    else
+        Console.WriteLine("Voorraad niet gevonden");
 }
 #endregion
