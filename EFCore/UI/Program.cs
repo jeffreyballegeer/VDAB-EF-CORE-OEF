@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Model.Entitites;
 using Model.Migrations;
+using System.Diagnostics;
 using System.Transactions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -48,7 +49,8 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 //UpdateWerknemers_MakeWerknemer5OversteVanWerknemer6();
 
 //DoeVoorraadTransfer();
-DoeVoorraadBijvulling();
+//DoeVoorraadBijvulling();
+ShowChangeTrackerStatusses();
 
 #region Methods
 
@@ -821,6 +823,7 @@ void UpdateWerknemers_MakeWerknemer5OversteVanWerknemer6()
         Console.WriteLine("Werknemer 5 niet gevonden.");
 }
 
+
 void VoorraadTransfer(int cursusNr, int vanMagazijnNr, int naarMagazijnNr, int aantalStuks)
 {
     var transactionOptions = new TransactionOptions { IsolationLevel = IsolationLevel.RepeatableRead };
@@ -890,7 +893,7 @@ void ToonVoorraad()
         Console.WriteLine($"Cursusnr  {item.CursusNr} {"\t"}- Stock {item.AantalStuks} {"\t"}- Magazijn nr {item.MagazijnNr}");
 }
 
-void DoeVoorraadBijvulling() 
+void DoeVoorraadBijvulling()
 {
     Console.WriteLine("De huidige cursusvoorraden : ");
     ToonVoorraad();
@@ -932,5 +935,56 @@ void VoorraadBijvulling(int cursusNr, int magazijnNr, int aantalStuks)
     }
     else
         Console.WriteLine("Voorraad niet gevonden");
+}
+
+
+void ShowChangeTrackerStatusses()
+{
+    using var context = new EFOpleidingenContext();
+    Console.WriteLine("-----------\nWijzigingen\n-----------");
+    // UnChanged
+    var land0 = context.Landen.First();
+    Console.WriteLine("\n" + land0.LandCode + " - " + land0.Naam +
+    " - " + context.Entry(land0).State + "\n"); 
+    // Added
+    var land1 = new Land { LandCode = "AB", Naam = "abcdef" };
+    context.Landen.Add(land1);
+    Console.WriteLine("\n" + land1.LandCode + " - " + land1.Naam +
+    " - " + context.Entry(land1).State + "\n"); 
+    // Modified
+    var land2 = context.Landen.Where(c => c.LandCode == "FR")
+    .FirstOrDefault();
+    land2.Naam = "France";
+    Console.WriteLine("\n" + land2.LandCode + " - " + land2.Naam +
+    " - " + context.Entry(land2).State + "\n"); 
+    // Deleted
+    var land3 = context.Landen.Where(c => c.LandCode == "LU")
+    .FirstOrDefault();
+    context.Landen.Remove(land3);
+    Console.WriteLine("\n" + land3.LandCode + " - " + land3.Naam +
+    " - " + context.Entry(land3).State + "\n"); 
+    // Detached - Disconnected data
+    var land4 = new Land { LandCode = "XY", Naam = "xyz" };
+    Console.WriteLine("\n" + land4.LandCode + " - " + land4.Naam +
+    " - " + context.Entry(land4).State + "\n");
+    
+    Console.WriteLine("--------------\nNa wijzigingen\n--------------");
+    context.ChangeTracker.DetectChanges(); //detect any changes in states
+    Console.WriteLine("\nHasChanges: {0}\n",
+    context.ChangeTracker.HasChanges()); //tell us if anything changed
+    foreach (var entry in context.ChangeTracker.Entries()) //iterate over the entity entries. Land4 is not included
+    {
+        Console.WriteLine("Entity: {0}, Status: {1}",
+        entry.Entity.GetType().Name, entry.State); //show status for each entity...
+        foreach (var x in entry.Properties) //... and for each changed entityproperty show the new and old value
+        {
+            Console.WriteLine(
+            $"Property '{x.Metadata.Name}'" +
+            $" is {(x.IsModified ? "modified" : "not modified")} " +
+            $" - Current value: '{x.CurrentValue}' " +
+            $" - Original value: '{x.OriginalValue}'");
+        }
+        Console.WriteLine("\n");
+    }
 }
 #endregion
